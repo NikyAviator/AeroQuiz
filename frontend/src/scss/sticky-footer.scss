@@ -1,0 +1,11 @@
+#root {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+#root main {
+  flex: 1 0 auto; /* This tells the browser to make the main content grow and shrink as needed, but not to shrink less than its base size */
+}
+#root footer {
+  flex-shrink: 0; /* This tells the browser that the footer should not shrink if there is not enough space */
+}
