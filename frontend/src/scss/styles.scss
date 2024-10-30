@@ -1,0 +1,12 @@
+// https://getbootstrap.com/docs/5.3/getting-started/vite/
+// Custom.scss
+// Option A: Include all of Bootstrap
+// $body-bg: #ffffff; // Set your desired background color
+
+@import '../../node_modules/bootstrap/scss/bootstrap';
+// Include any default variable overrides here (though functions won't be available)
+
+// Then add additional custom code here Like Google Fonts:
+
+// Import your own SCSS files
+// @import './sticky-footer.scss';

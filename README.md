@@ -1,6 +1,6 @@
 # AeroQuiz
 
-Fullstack Application to practice and also to give back to the Aviation community, which I love.
+Fullstack Application
 
 # 1. Frontend:
 
@@ -26,4 +26,18 @@ cd AeroQuiz/frontend
 
 ```
 npm run dev
+```
+
+# Customize:
+
+## Cleanup & customization:
+
+Also, public has been moved to root folder (frontend/public/). This is for your static files.
+
+Delete everything in src/, except: App.jsx & main.jsx
+
+Create folders in src/ :
+
+```
+mkdir Components Pages scss
 ```
