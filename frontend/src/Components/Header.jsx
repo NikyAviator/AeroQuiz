@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 const Header = () => {
   return (
-    <Navbar expand='lg' variant='dark'>
+    <Navbar expand='lg' variant='secondary'>
       <Container>
         <Navbar.Brand href='/'>AeroQuiz</Navbar.Brand>
       </Container>
