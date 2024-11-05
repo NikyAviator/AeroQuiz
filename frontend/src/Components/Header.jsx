@@ -7,7 +7,16 @@ const Header = () => {
   return (
     <Navbar expand='lg' className='bg-secondary'>
       <Container>
-        <Navbar.Brand href='/'>AeroQuiz</Navbar.Brand>
+        <Navbar.Brand href='/'>
+          <img
+            alt=''
+            src='public/airplane.png'
+            width='30'
+            height='30'
+            className='d-inline-block align-top'
+          />{' '}
+          AeroQuiz
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls='basic-navbar-nav' />
         <Navbar.Collapse id='basic-navbar-nav'>
           <Nav className='ms-auto'>
