@@ -10,7 +10,7 @@ const Header = () => {
         <Navbar.Brand href='/'>
           <img
             alt=''
-            src='public/airplane.png'
+            src='/airplane.png'
             width='30'
             height='30'
             className='d-inline-block align-top'
