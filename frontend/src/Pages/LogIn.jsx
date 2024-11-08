@@ -1,7 +1,11 @@
 // src/Pages/LogIn.jsx
 import '../scss/styles.scss';
 import { useState } from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
@@ -50,6 +54,11 @@ const LogIn = () => {
             <a href='#' className='small'>
               Forgot your password?
             </a>
+          </div>
+          <div className='text-center mt-3'>
+            <small>
+              Do not have an account? <a href='/signup'>Sign Up</a>
+            </small>
           </div>
         </Col>
       </Row>
