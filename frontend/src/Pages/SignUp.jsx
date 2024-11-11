@@ -8,14 +8,13 @@ const SignUp = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    termsAccepted: false,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     });
   };
 
@@ -74,17 +73,6 @@ const SignUp = () => {
                 placeholder='Re-enter Password'
                 name='confirmPassword'
                 value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group controlId='formTerms' className='mb-3'>
-              <Form.Check
-                type='checkbox'
-                label='I agree to the Terms and Conditions'
-                name='termsAccepted'
-                checked={formData.termsAccepted}
                 onChange={handleChange}
                 required
               />
