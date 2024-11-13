@@ -1,0 +1,32 @@
+.text-wrapper {
+  position: relative;
+  display: inline-block;
+  padding: 20px; /* Add padding around the text */
+  background-color: #d3d3d3; /* First background color (lighter gray) */
+  color: #0c0000; /* Text color to ensure visibility */
+  border-radius: 10px; /* Optional: rounded corners for a nicer look */
+
+  /* Optional: Add a subtle box-shadow for further depth */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.text-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 10px; /* Shift 10px down */
+  left: 10px; /* Shift 10px to the right */
+  right: -10px;
+  bottom: -10px;
+  background-color: #000000; /* Darker grey-ish color for the "shadow" effect */
+  z-index: -1; /* Place behind the text */
+  border-radius: 12px; /* Match or slightly increase the rounded corners */
+
+  /* Add a blur to the shadow effect */
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.2);
+}
+// For Hover Effect
+// .text-wrapper:hover::before {
+//   background-color: #a9a9a9; /* Change to a medium gray on hover */
+//   transform: scale(1.05); /* Slight zoom effect */
+//   transition: transform 0.3s ease, background-color 0.3s ease;
+// }
