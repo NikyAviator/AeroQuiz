@@ -82,7 +82,13 @@ touch sticky-footer.scss
 
 # How to RUN:
 
-### For local: cd into frontend folder and:
+### For local frontend: cd into frontend folder and:
+
+```
+npm run dev
+```
+
+### For local backend: cd into backend folder and:
 
 ```
 npm run dev
