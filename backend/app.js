@@ -1,15 +1,17 @@
 const express = require('express');
-const router = express.Router();
+const app = express(); // Create the main Express app
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+// Middleware for JSON parsing
+app.use(express.json());
 
-router.route('/').get((req, res) => {
+// Define a route
+app.get('/', (req, res) => {
   res.send(`<h2>Welcome to the API from ${req.baseUrl}</h2>`);
 });
+
+// Set up the server
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-module.exports = router;
