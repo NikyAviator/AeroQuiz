@@ -14,8 +14,17 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json());
 
-// 3) ROUTES
+// 2) ROUTES
 app.use('/api/v1/users', userRouter);
+
+// 3) ERROR HANDLING
+// Catch-all for unhandled routes
+app.use('*', (req, res) => {
+  res.status(404).json({
+    status: 'error',
+    message: `Can't find ${req.originalUrl} on this server!`,
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}...`);
