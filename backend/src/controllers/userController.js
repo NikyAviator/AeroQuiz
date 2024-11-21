@@ -1,8 +1,25 @@
+const fs = require('fs');
+const path = require('path');
+
+const users = JSON.parse(
+  fs.readFileSync(path.join(__dirname, `../../data/users.json`))
+);
+
 const getAllUsers = async (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
+  try {
+    res.status(200).json({
+      status: 'success',
+      results: users.length,
+      data: {
+        users,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
 };
 
 const getUser = async (req, res) => {
