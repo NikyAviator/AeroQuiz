@@ -1,17 +1,24 @@
 const express = require('express');
-const app = express(); // Create the main Express app
+const morgan = require('morgan');
 
-// Middleware for JSON parsing
-app.use(express.json());
-
-// Define a route
-app.get('/', (req, res) => {
-  res.send(`<h2>Welcome to the API from ${req.baseUrl}</h2>`);
-});
-
-// Set up the server
 const PORT = process.env.PORT || 5000;
 
+const userRouter = require('./src/v1/routes/userRoutes');
+
+const app = express();
+
+// 1) MIDDLEWARES
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
+app.use(express.json());
+
+// 3) ROUTES
+app.use('/api/v1/users', userRouter);
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`App running on port ${PORT}...`);
 });
+
+module.exports = app;
