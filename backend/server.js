@@ -1,13 +1,7 @@
+const dotenv = require('dotenv');
 const app = require('./app');
-const morgan = require('morgan');
 
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
-
-// Få fram environment variabeln
-// Sparas i process.env - massa stuff där!
-console.log(app.get('env'));
+dotenv.config({ path: './config.env' });
 
 // Start server
 const PORT = process.env.PORT || 5000;
