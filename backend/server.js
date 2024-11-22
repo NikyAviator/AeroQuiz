@@ -1,7 +1,9 @@
+// On top because:
+// Must load first to set up the environment variables
 const dotenv = require('dotenv');
-const app = require('./app');
-
 dotenv.config({ path: './config.env' });
+
+const app = require('./app');
 
 // Start server
 const port = process.env.PORT || 5000;

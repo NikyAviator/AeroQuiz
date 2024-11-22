@@ -1,7 +1,5 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const morgan = require('morgan');
-dotenv.config({ path: './config.env' });
 
 // Available Routes
 const userRouter = require('./src/v1/routes/userRoutes');
@@ -15,6 +13,11 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log('Hello from the middleware 👋');
+  next();
+});
 
 // 2) ROUTES
 app.use('/api/v1/users', userRouter);
