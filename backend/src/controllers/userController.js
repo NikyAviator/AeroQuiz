@@ -5,18 +5,6 @@ const users = JSON.parse(
   fs.readFileSync(path.join(__dirname, `../../data/users.json`))
 );
 
-// WILL NOT WORK because of random ID's in users.json file
-// He uses this on tours instead
-const checkId = (req, res, next, value) => {
-  if (req.params.id * 1 > users.length) {
-    return res.status(404).json({
-      status: 'error',
-      message: 'Invalid ID',
-    });
-  }
-  next();
-};
-
 const getAllUsers = async (req, res) => {
   try {
     res.status(200).json({
@@ -63,7 +51,6 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-  checkId,
   getAllUsers,
   getUser,
   createUser,
