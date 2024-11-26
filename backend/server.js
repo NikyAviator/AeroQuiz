@@ -16,9 +16,7 @@ mongoose
   .connect(DB, {
     useNewUrlParser: true,
   })
-  .then((connection) => {
-    // REMOVE IN PROD!!!!
-    console.log(connection.connections);
+  .then(() => {
     console.log('DB connection successful! 🎉');
   })
   .catch((err) => {
