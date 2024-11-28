@@ -93,3 +93,36 @@ npm run dev
 ```
 npm run dev
 ```
+
+---
+
+# MongoDB
+
+### Import Dummy Data to MongoDB Atlas
+
+1. Open a terminal and cd into the dummy data's position:
+
+```
+cd /path/to/directory
+```
+
+2. Run the mongoimport command:
+
+```
+mongoimport --uri "mongodb+srv://nikolaikocev:<PASSWORD>@cluster0.3iaae.mongodb.net/aeroquiz" --collection users --type json --file users.json --jsonArray
+```
+
+### Command breakdown
+
+--uri: The connection string to your MongoDB Atlas cluster.
+
+Replace PASSWORD with your actual password.
+The database name is aeroquiz.
+
+--collection users: The name of the collection where the data will be imported.
+
+--type json: Specifies the file type (json in this case).
+
+--file users.json: The file to import.
+
+--jsonArray: Indicates that the file contains an array of JSON objects.
