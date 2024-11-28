@@ -1,9 +1,7 @@
-const fs = require('fs');
-const path = require('path');
-
-const users = JSON.parse(
-  fs.readFileSync(path.join(__dirname, `../../data/users.json`))
-);
+// For local data, import: fs and path
+// const users = JSON.parse(
+//   fs.readFileSync(path.join(__dirname, `../../data/users.json`))
+// );
 
 const getAllUsers = async (req, res) => {
   try {
