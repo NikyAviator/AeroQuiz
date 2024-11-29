@@ -1,3 +1,4 @@
+import axios from 'axios';
 import '../scss/styles.scss';
 import { useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
@@ -18,10 +19,20 @@ const SignUp = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add form validation and sign-up logic here
-    console.log('Sign-Up Data:', formData);
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/api/v1/users',
+        formData
+      );
+      console.log('User created successfully:', response.data);
+    } catch (error) {
+      console.error(
+        'Error creating user:',
+        error.response?.data || error.message
+      );
+    }
   };
 
   return (
