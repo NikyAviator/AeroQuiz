@@ -1,25 +1,31 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 
-// Available Routes
-const userRouter = require('./src/v1/routes/userRoutes');
-
-const app = express();
+const app = express(); // Ensure the app is defined before using middleware
 
 // 1) MIDDLEWARES
+
+// Enable CORS
+app.use(cors()); // This is now inside the `app` setup
+
+// Enable request logging with morgan in development
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
   console.log(`Morgan enabled`);
 }
 
+// Parse JSON payloads
 app.use(express.json());
 
+// Custom middleware for debugging
 app.use((req, res, next) => {
   console.log('Hello from the middleware 👋');
   next();
 });
 
 // 2) ROUTES
+const userRouter = require('./src/v1/routes/userRoutes');
 app.use('/api/v1/users', userRouter);
 
 // 3) ERROR HANDLING

@@ -1,7 +1,4 @@
-// For local data, import: fs and path
-// const users = JSON.parse(
-//   fs.readFileSync(path.join(__dirname, `../../data/users.json`))
-// );
+const User = require('../models/userModel<');
 
 const getAllUsers = async (req, res) => {
   try {
@@ -28,10 +25,20 @@ const getUser = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
+  try {
+    const newUser = await User.create(req.body);
+    res.status(201).json({
+      status: 'success',
+      data: {
+        user: newUser,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
 };
 
 const updateUser = async (req, res) => {
