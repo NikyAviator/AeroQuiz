@@ -5,17 +5,19 @@ import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
+    userName: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    isAdmin: false,
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -41,23 +43,47 @@ const SignUp = () => {
         <Col>
           <h2 className='text-center mb-4'>Sign Up</h2>
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId='formName' className='mb-3'>
-              <Form.Label>Name</Form.Label>
+            <Form.Group controlId='formFirstName' className='mb-3'>
+              <Form.Label>First Name</Form.Label>
               <Form.Control
                 type='text'
-                placeholder='Enter your full name'
-                name='name'
-                value={formData.name}
+                placeholder='Enter your first name'
+                name='firstName'
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId='formLastName' className='mb-3'>
+              <Form.Label>Last Name</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter your last name'
+                name='lastName'
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId='formUserName' className='mb-3'>
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Choose a username'
+                name='userName'
+                value={formData.userName}
                 onChange={handleChange}
                 required
               />
             </Form.Group>
 
             <Form.Group controlId='formEmail' className='mb-3'>
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>Email Address</Form.Label>
               <Form.Control
                 type='email'
-                placeholder='Enter email'
+                placeholder='Enter your email'
                 name='email'
                 value={formData.email}
                 onChange={handleChange}
@@ -69,21 +95,9 @@ const SignUp = () => {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type='password'
-                placeholder='Password'
+                placeholder='Create a password'
                 name='password'
                 value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group controlId='formConfirmPassword' className='mb-3'>
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type='password'
-                placeholder='Re-enter Password'
-                name='confirmPassword'
-                value={formData.confirmPassword}
                 onChange={handleChange}
                 required
               />
