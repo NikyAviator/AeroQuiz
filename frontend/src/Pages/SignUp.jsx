@@ -10,14 +10,13 @@ const SignUp = () => {
     userName: '',
     email: '',
     password: '',
-    isAdmin: false,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     });
   };
 
@@ -25,9 +24,10 @@ const SignUp = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/v1/users',
+        `${import.meta.env.VITE_API_URL}/users`,
         formData
       );
+
       console.log('User created successfully:', response.data);
     } catch (error) {
       console.error(
