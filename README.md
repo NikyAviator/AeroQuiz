@@ -94,6 +94,14 @@ npm run dev
 npm run dev
 ```
 
+### Starting both frontend and backend (dev dep concurrently):
+
+cd into root project and:
+
+```
+npm start
+```
+
 ---
 
 # MongoDB
