@@ -10,7 +10,7 @@ router.param('id', (req, res, next, value) => {
   console.log(`User id is: ${value}`);
   next();
 });
-
+// USER ROUTES
 router
   .route('/')
   .get(userController.getAllUsers)
