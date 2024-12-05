@@ -1,5 +1,6 @@
 import { Modal, Button } from 'react-bootstrap';
 
+// eslint-disable-next-line react/prop-types
 const SuccessPopup = ({ show, handleClose, message }) => {
   return (
     <Modal show={show} onHide={handleClose}>
