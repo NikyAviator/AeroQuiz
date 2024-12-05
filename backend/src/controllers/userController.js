@@ -75,11 +75,22 @@ const updateUser = async (req, res) => {
   }
 };
 
+// Do not send back the user data, that is why we do not save the await to a variable
+// This is because of RESTful API standards
 const deleteUser = async (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
+  try {
+    await User.findByIdAndDelete(req.params.id);
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error,
+    });
+  }
 };
 
 module.exports = {
