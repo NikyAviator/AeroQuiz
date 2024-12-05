@@ -2,6 +2,8 @@ const User = require('../models/userModel');
 
 const getAllUsers = async (req, res) => {
   try {
+    const users = await User.find();
+
     res.status(200).json({
       status: 'success',
       results: users.length,
@@ -11,17 +13,28 @@ const getAllUsers = async (req, res) => {
     });
   } catch (error) {
     res.status(404).json({
-      status: 'error',
-      message: error.message,
+      status: 'fail',
+      message: error,
     });
   }
 };
 
 const getUser = async (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
+  try {
+    const user = await User.findById(req.params.id);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'fail',
+      message: error,
+    });
+  }
 };
 
 const createUser = async (req, res) => {
@@ -35,8 +48,8 @@ const createUser = async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({
-      status: 'error',
-      message: error.message,
+      status: 'fail',
+      message: error,
     });
   }
 };
