@@ -27,6 +27,8 @@ app.use((req, res, next) => {
 // 2) ROUTES
 const userRouter = require('./src/v1/routes/userRoutes');
 app.use('/api/v1/users', userRouter);
+const questionRouter = require('./src/v1/routes/questionRoutes');
+app.use('/api/v1/questions', questionRouter);
 
 // 3) ERROR HANDLING
 // Catch-all for unhandled routes
