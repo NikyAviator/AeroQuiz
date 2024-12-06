@@ -1,12 +1,21 @@
 const Question = require('../models/questionModel');
 
 // Create a new question
+// Create single or multiple questions
 const createQuestions = async (req, res) => {
   try {
-    const newQuestions = await Question.insertMany(req.body); // Accepts an array of questions
+    let newQuestions;
+    if (Array.isArray(req.body)) {
+      // If the request body is an array, use insertMany
+      newQuestions = await Question.insertMany(req.body);
+    } else {
+      // If the request body is a single object, use create
+      newQuestions = await Question.create(req.body);
+    }
+
     res.status(201).json({
       status: 'success',
-      results: newQuestions.length,
+      results: Array.isArray(newQuestions) ? newQuestions.length : 1,
       data: {
         questions: newQuestions,
       },
