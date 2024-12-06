@@ -1,7 +1,7 @@
 const Question = require('../models/questionModel');
 
 // Create a new question
-exports.createQuestion = async (req, res) => {
+const createQuestion = async (req, res) => {
   try {
     const newQuestion = await Question.create(req.body); // Expecting topic, questionText, answers
     res.status(201).json({
@@ -19,7 +19,7 @@ exports.createQuestion = async (req, res) => {
 };
 
 // Get all questions for a topic
-exports.getQuestionsByTopic = async (req, res) => {
+const getQuestionsByTopic = async (req, res) => {
   try {
     const { topic } = req.params;
     const questions = await Question.find({ topic });
@@ -39,7 +39,7 @@ exports.getQuestionsByTopic = async (req, res) => {
 };
 
 // Delete a question by ID
-exports.deleteQuestion = async (req, res) => {
+const deleteQuestion = async (req, res) => {
   try {
     const { id } = req.params;
     await Question.findByIdAndDelete(id);
@@ -53,4 +53,10 @@ exports.deleteQuestion = async (req, res) => {
       message: err.message,
     });
   }
+};
+
+exports.createQuestion = {
+  createQuestion,
+  getQuestionsByTopic,
+  deleteQuestion,
 };

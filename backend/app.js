@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const userRouter = require('./src/v1/routes/userRoutes');
+const questionRouter = require('./src/v1/routes/questionRoutes');
 
 const app = express(); // Ensure the app is defined before using middleware
 
@@ -19,9 +21,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 
 // 2) ROUTES
-const userRouter = require('./src/v1/routes/userRoutes');
 app.use('/api/v1/users', userRouter);
-const questionRouter = require('./src/v1/routes/questionRoutes');
 app.use('/api/v1/questions', questionRouter);
 
 // 3) ERROR HANDLING
