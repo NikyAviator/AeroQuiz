@@ -18,12 +18,6 @@ if (process.env.NODE_ENV === 'development') {
 // Parse JSON payloads
 app.use(express.json());
 
-// Custom middleware for debugging
-app.use((req, res, next) => {
-  console.log('Hello from the middleware 👋');
-  next();
-});
-
 // 2) ROUTES
 const userRouter = require('./src/v1/routes/userRoutes');
 app.use('/api/v1/users', userRouter);
