@@ -1,13 +1,14 @@
 const Question = require('../models/questionModel');
 
 // Create a new question
-const createQuestion = async (req, res) => {
+const createQuestions = async (req, res) => {
   try {
-    const newQuestion = await Question.create(req.body); // Expecting topic, questionText, answers
+    const newQuestions = await Question.insertMany(req.body); // Accepts an array of questions
     res.status(201).json({
       status: 'success',
+      results: newQuestions.length,
       data: {
-        question: newQuestion,
+        questions: newQuestions,
       },
     });
   } catch (err) {
@@ -56,7 +57,7 @@ const deleteQuestion = async (req, res) => {
 };
 
 module.exports = {
-  createQuestion,
+  createQuestions,
   getQuestionsByTopic,
   deleteQuestion,
 };
