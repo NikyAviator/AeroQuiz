@@ -48,6 +48,24 @@ const getQuestionsByTopic = async (req, res) => {
   }
 };
 
+const getAllQuestions = async (req, res) => {
+  try {
+    const questions = await Question.find();
+    res.status(200).json({
+      status: 'success',
+      results: questions.length,
+      data: {
+        questions,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+
 // Delete a question by ID
 const deleteQuestion = async (req, res) => {
   try {
@@ -69,4 +87,5 @@ module.exports = {
   createQuestions,
   getQuestionsByTopic,
   deleteQuestion,
+  getAllQuestions,
 };
