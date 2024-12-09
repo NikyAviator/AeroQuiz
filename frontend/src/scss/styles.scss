@@ -1,5 +1,26 @@
 // https://getbootstrap.com/docs/5.3/getting-started/vite/
-// Custom.scss
+// 1. Custom.scss
+// 2. import Bootstrap
+// 3. styles.scss
+
+html,
+body {
+  height: 100%; // Ensures the full height of the viewport is used
+  margin: 0;
+
+  &.background-home {
+    background-color: #b1f0f7; // Background for Home page
+  }
+
+  &.background-signup {
+    background-color: #f7e8b1; // Background for Sign Up page
+  }
+
+  &.background-login {
+    background-color: #e8f7b1; // Background for Log In page
+  }
+}
+
 // Option A: Include all of Bootstrap
 // $body-bg: #ffffff; // Set your desired background color
 
