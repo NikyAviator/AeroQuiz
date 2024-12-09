@@ -48,6 +48,7 @@ const getQuestionsByTopic = async (req, res) => {
   }
 };
 
+// Get all questions
 const getAllQuestions = async (req, res) => {
   try {
     const questions = await Question.find();
