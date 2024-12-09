@@ -1,9 +1,9 @@
-// Header.scss
+// Footer
 // color palette: https://colorhunt.co/palette/d4ebf81f509a0a3981e38e49
-.navbar {
+.navbar-footer {
   background-color: #0a3981; // Set background color | 3
-  .navbar-brand,
-  .nav-link {
-    color: #e38e49 !important; // Set text color | 4
-  }
+}
+
+.text-footer {
+  color: #e38e49 !important; // Set text color | 4
 }
