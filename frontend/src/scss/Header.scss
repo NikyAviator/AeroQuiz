@@ -1,9 +1,30 @@
-// Header.scss
-// color palette: https://colorhunt.co/palette/d4ebf81f509a0a3981e38e49
-.navbar {
-  background-color: #0a3981; // Set background color | 3
-  .navbar-brand,
-  .nav-link {
-    color: #e38e49 !important; // Set text color | 4
+.header {
+  position: relative;
+  height: 500px; /* Adjust the height if needed */
+  background: url('/airline-takeoff.jpg') no-repeat center top; /* Center horizontally, align to top */
+  background-size: cover; /* Ensure the image scales nicely */
+
+  .content {
+    position: relative;
+    z-index: 2;
+    color: #fada7a;
+    text-align: center;
+    padding: 20px;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(
+      0,
+      0,
+      0,
+      0.5
+    ); /* Optional overlay for better text readability */
+    z-index: 1;
   }
 }
