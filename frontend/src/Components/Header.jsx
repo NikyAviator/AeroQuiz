@@ -2,10 +2,10 @@ import '../scss/Header.scss';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
+import SignInButton from './SignInButton';
+import JoinNowButton from './JoinNowButton';
 const Header = () => {
   return (
     <div className='header'>
@@ -45,22 +45,8 @@ const Header = () => {
             </p>
           </Col>
           <Col md={6}>
-            <Button
-              href='/signup'
-              variant='primary'
-              size='lg'
-              className='hero-button'
-            >
-              Join Now
-            </Button>
-            <Button
-              href='/login'
-              variant='secondary'
-              size='lg'
-              className='hero-button'
-            >
-              Sign In
-            </Button>
+            <SignInButton />
+            <JoinNowButton />
           </Col>
         </Row>
       </Container>

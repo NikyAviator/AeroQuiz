@@ -1,0 +1,21 @@
+.join-now-button {
+  color: white;
+  border: 2px solid white; /* White border */
+  background-color: transparent;
+  font-weight: bold;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: white;
+    color: #0a3981; /* Change text color on hover */
+    border-color: white; /* Keep the border white */
+  }
+
+  .me-2 {
+    font-size: 1.5rem; /* Adjust the airplane icon size */
+  }
+}
