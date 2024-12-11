@@ -1,0 +1,11 @@
+.small-navbar {
+  background-color: #0a3981; // Blue background
+  padding: 10px 20px; // Smaller padding
+  .text-white {
+    color: #fada7a !important; // Yellow text
+    font-weight: bold;
+    &:hover {
+      color: #ffffff !important; // White on hover
+    }
+  }
+}
