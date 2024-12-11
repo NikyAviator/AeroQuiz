@@ -44,7 +44,7 @@ const Header = () => {
               on Meteorology, Navigation, Principles of Flight, and more.
             </p>
           </Col>
-          <Col md={6}>
+          <Col md={4}>
             <SignInButton />
             <JoinNowButton />
           </Col>
