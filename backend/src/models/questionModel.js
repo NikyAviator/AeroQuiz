@@ -25,6 +25,7 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A question text is required'],
     trim: true,
+    unique: true, // Prevent duplicate questions in the database
   },
   answers: {
     type: [answerSchema], // Embedded answers
@@ -44,6 +45,12 @@ const questionSchema = new mongoose.Schema({
     type: String,
     enum: ['easy', 'medium', 'hard'], // Optional difficulty levels
     default: 'medium',
+  },
+  level: {
+    type: String,
+    enum: ['PPL', 'ATPL'], // Defines the license level for the question
+    required: [true, 'A level is required (PPL or ATPL)'],
+    default: 'ATPL',
   },
   createdAt: {
     type: Date,

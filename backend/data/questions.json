@@ -1,0 +1,95 @@
+[
+  {
+    "topic": "Meteorology",
+    "questionText": "What is the primary cause of turbulence?",
+    "answers": [
+      { "text": "Temperature changes", "isCorrect": false },
+      { "text": "Pressure variations", "isCorrect": false },
+      { "text": "Wind shear", "isCorrect": true },
+      { "text": "Humidity levels", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium"
+  },
+  {
+    "topic": "Navigation",
+    "questionText": "What instrument is used to measure altitude?",
+    "answers": [
+      { "text": "Altimeter", "isCorrect": true },
+      { "text": "Airspeed Indicator", "isCorrect": false },
+      { "text": "Vertical Speed Indicator", "isCorrect": false },
+      { "text": "Compass", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "easy"
+  },
+  {
+    "topic": "Principles of Flight",
+    "questionText": "What is the effect of increased airspeed on lift?",
+    "answers": [
+      { "text": "Lift increases", "isCorrect": true },
+      { "text": "Lift decreases", "isCorrect": false },
+      { "text": "Lift remains constant", "isCorrect": false },
+      { "text": "Lift depends on air density only", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium"
+  },
+  {
+    "topic": "Meteorology",
+    "questionText": "What type of cloud indicates thunderstorms?",
+    "answers": [
+      { "text": "Cumulonimbus", "isCorrect": true },
+      { "text": "Cirrus", "isCorrect": false },
+      { "text": "Stratus", "isCorrect": false },
+      { "text": "Altostratus", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium"
+  },
+  {
+    "topic": "Navigation",
+    "questionText": "Which direction does a compass needle point?",
+    "answers": [
+      { "text": "Magnetic North", "isCorrect": true },
+      { "text": "True North", "isCorrect": false },
+      { "text": "Grid North", "isCorrect": false },
+      { "text": "Geographical South", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "easy"
+  },
+  {
+    "topic": "Navigation",
+    "questionText": "What is the function of a VOR?",
+    "answers": [
+      { "text": "Measure altitude", "isCorrect": false },
+      { "text": "Provide bearing information", "isCorrect": true },
+      { "text": "Indicate airspeed", "isCorrect": false },
+      { "text": "Display GPS coordinates", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium"
+  },
+  {
+    "topic": "Principles of Flight",
+    "questionText": "What is the relationship between lift and angle of attack?",
+    "answers": [
+      {
+        "text": "Lift decreases with higher angle of attack",
+        "isCorrect": false
+      },
+      {
+        "text": "Lift increases with angle of attack up to a critical point",
+        "isCorrect": true
+      },
+      { "text": "Lift is unaffected by angle of attack", "isCorrect": false },
+      {
+        "text": "Lift is always inversely proportional to angle of attack",
+        "isCorrect": false
+      }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium"
+  }
+]
