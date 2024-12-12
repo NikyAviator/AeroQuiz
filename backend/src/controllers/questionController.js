@@ -66,13 +66,13 @@ const getAllQuestions = async (req, res) => {
     });
   }
 };
-
+// Byt från 200 till 204 för att indikera att det inte finns något innehåll (tryhardar seneare)
 // Delete a question by ID
 const deleteQuestion = async (req, res) => {
   try {
     const { id } = req.params;
     await Question.findByIdAndDelete(id);
-    res.status(204).json({
+    res.status(200).json({
       status: 'success',
       message: 'Question deleted successfully',
     });
@@ -87,7 +87,7 @@ const deleteQuestion = async (req, res) => {
 const deleteAllQuestions = async (req, res) => {
   try {
     await Question.deleteMany({});
-    res.status(204).json({
+    res.status(200).json({
       status: 'success',
       message: 'All questions deleted successfully',
     });
