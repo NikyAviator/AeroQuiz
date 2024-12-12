@@ -84,9 +84,25 @@ const deleteQuestion = async (req, res) => {
   }
 };
 
+const deleteAllQuestions = async (req, res) => {
+  try {
+    await Question.deleteMany({});
+    res.status(204).json({
+      status: 'success',
+      message: 'All questions deleted successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createQuestions,
   getQuestionsByTopic,
   deleteQuestion,
   getAllQuestions,
+  deleteAllQuestions,
 };

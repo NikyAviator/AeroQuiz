@@ -12,4 +12,6 @@ router.route('/:topic').get(questionController.getQuestionsByTopic); // Get ques
 
 router.route('/:id').delete(questionController.deleteQuestion); // Delete a question by ID
 
+router.route('/').delete(questionController.deleteAllQuestions); // Delete all questions
+
 module.exports = router;
