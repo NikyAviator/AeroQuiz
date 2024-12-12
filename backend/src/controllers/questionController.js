@@ -51,7 +51,20 @@ const getQuestionsByTopic = async (req, res) => {
 // Get all questions
 const getAllQuestions = async (req, res) => {
   try {
-    const questions = await Question.find();
+    // BUILD THE QUERY
+    // Create a copy of the query object
+    const queryObj = { ...req.query };
+    // Exclude fields from the query object
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    // The find method returns a query witch upon we can chain other methods like; sort, limit, lte, gte etc.
+    const query = Question.find(queryObj);
+
+    // EXECUTE THE QUERY
+    const questions = await query;
+
+    // SEND RESPONSE
     res.status(200).json({
       status: 'success',
       results: questions.length,
@@ -66,6 +79,7 @@ const getAllQuestions = async (req, res) => {
     });
   }
 };
+
 // Byt från 200 till 204 för att indikera att det inte finns något innehåll (tryhardar seneare)
 // Delete a question by ID
 const deleteQuestion = async (req, res) => {
