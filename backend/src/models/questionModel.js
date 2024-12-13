@@ -19,7 +19,13 @@ const questionSchema = new mongoose.Schema({
   topic: {
     type: String,
     required: [true, 'A topic is required'],
-    enum: ['Meteorology', 'Navigation', 'Principles of Flight', 'Others'], // Add topics as needed
+    enum: [
+      'Meteorology',
+      'Navigation',
+      'Principles of Flight',
+      'Performance',
+      'Human Performance',
+    ], // Add topics as needed
   },
   questionText: {
     type: String,

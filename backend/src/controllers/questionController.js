@@ -28,6 +28,25 @@ const createQuestions = async (req, res) => {
   }
 };
 
+// Get All Topics
+const getTopics = async (req, res) => {
+  try {
+    const topics = await Question.find().distinct('topic');
+    res.status(200).json({
+      status: 'success',
+      results: topics.length,
+      data: {
+        topics,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+};
+
 // Get all questions for a topic
 const getQuestionsByTopic = async (req, res) => {
   try {
@@ -60,6 +79,7 @@ const getAllQuestions = async (req, res) => {
     excludedFields.forEach((el) => delete queryObj[el]);
 
     // 2) Advanced filtering
+    // Han lägger [] i POSTMAN
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     console.log(JSON.parse(queryStr));
@@ -121,6 +141,7 @@ const deleteAllQuestions = async (req, res) => {
 
 module.exports = {
   createQuestions,
+  getTopics,
   getQuestionsByTopic,
   deleteQuestion,
   getAllQuestions,

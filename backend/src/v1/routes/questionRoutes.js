@@ -8,6 +8,8 @@ router.route('/').post(questionController.createQuestions); // Create a new ques
 
 router.route('/').get(questionController.getAllQuestions); // Get all questions
 
+router.route('/topics').get(questionController.getTopics); // Get all topics
+
 router.route('/:topic').get(questionController.getQuestionsByTopic); // Get questions by topic
 
 router.route('/:id').delete(questionController.deleteQuestion); // Delete a question by ID
