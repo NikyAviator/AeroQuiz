@@ -9,7 +9,21 @@
       { "text": "Humidity levels", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "level": "ATPL"
+  },
+  {
+    "topic": "Meteorology",
+    "questionText": "What does the term 'temperature inversion' refer to?",
+    "answers": [
+      { "text": "Temperature increases with altitude", "isCorrect": true },
+      { "text": "Temperature decreases with altitude", "isCorrect": false },
+      { "text": "Temperature remains constant", "isCorrect": false },
+      { "text": "Temperature fluctuates rapidly", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium",
+    "level": "ATPL"
   },
   {
     "topic": "Navigation",
@@ -21,7 +35,27 @@
       { "text": "Compass", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "level": "ATPL"
+  },
+  {
+    "topic": "Navigation",
+    "questionText": "What is a great circle route?",
+    "answers": [
+      {
+        "text": "The shortest path between two points on a sphere",
+        "isCorrect": true
+      },
+      { "text": "A circular holding pattern", "isCorrect": false },
+      {
+        "text": "A navigational path following latitude lines",
+        "isCorrect": false
+      },
+      { "text": "A magnetic compass route", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium",
+    "level": "ATPL"
   },
   {
     "topic": "Principles of Flight",
@@ -33,63 +67,97 @@
       { "text": "Lift depends on air density only", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium"
-  },
-  {
-    "topic": "Meteorology",
-    "questionText": "What type of cloud indicates thunderstorms?",
-    "answers": [
-      { "text": "Cumulonimbus", "isCorrect": true },
-      { "text": "Cirrus", "isCorrect": false },
-      { "text": "Stratus", "isCorrect": false },
-      { "text": "Altostratus", "isCorrect": false }
-    ],
-    "questionType": "multiple-choice",
-    "difficulty": "medium"
-  },
-  {
-    "topic": "Navigation",
-    "questionText": "Which direction does a compass needle point?",
-    "answers": [
-      { "text": "Magnetic North", "isCorrect": true },
-      { "text": "True North", "isCorrect": false },
-      { "text": "Grid North", "isCorrect": false },
-      { "text": "Geographical South", "isCorrect": false }
-    ],
-    "questionType": "multiple-choice",
-    "difficulty": "easy"
-  },
-  {
-    "topic": "Navigation",
-    "questionText": "What is the function of a VOR?",
-    "answers": [
-      { "text": "Measure altitude", "isCorrect": false },
-      { "text": "Provide bearing information", "isCorrect": true },
-      { "text": "Indicate airspeed", "isCorrect": false },
-      { "text": "Display GPS coordinates", "isCorrect": false }
-    ],
-    "questionType": "multiple-choice",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "level": "ATPL"
   },
   {
     "topic": "Principles of Flight",
-    "questionText": "What is the relationship between lift and angle of attack?",
+    "questionText": "What happens to induced drag as airspeed increases?",
     "answers": [
+      { "text": "It decreases", "isCorrect": true },
+      { "text": "It increases", "isCorrect": false },
+      { "text": "It remains constant", "isCorrect": false },
+      { "text": "It fluctuates unpredictably", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium",
+    "level": "ATPL"
+  },
+  {
+    "topic": "Performance",
+    "questionText": "What is the effect of increased aircraft weight on takeoff distance?",
+    "answers": [
+      { "text": "Takeoff distance decreases", "isCorrect": false },
+      { "text": "Takeoff distance increases", "isCorrect": true },
+      { "text": "Takeoff distance remains constant", "isCorrect": false },
       {
-        "text": "Lift decreases with higher angle of attack",
-        "isCorrect": false
-      },
-      {
-        "text": "Lift increases with angle of attack up to a critical point",
-        "isCorrect": true
-      },
-      { "text": "Lift is unaffected by angle of attack", "isCorrect": false },
-      {
-        "text": "Lift is always inversely proportional to angle of attack",
+        "text": "Takeoff distance depends only on temperature",
         "isCorrect": false
       }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "level": "ATPL"
+  },
+  {
+    "topic": "Performance",
+    "questionText": "What is the primary purpose of a balanced field length calculation?",
+    "answers": [
+      {
+        "text": "To determine the shortest runway required",
+        "isCorrect": false
+      },
+      {
+        "text": "To match accelerate-stop and accelerate-go distances",
+        "isCorrect": true
+      },
+      { "text": "To optimize climb performance", "isCorrect": false },
+      { "text": "To estimate aircraft range", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium",
+    "level": "ATPL"
+  },
+  {
+    "topic": "Human Performance",
+    "questionText": "What is the primary cause of fatigue in pilots?",
+    "answers": [
+      { "text": "Prolonged wakefulness", "isCorrect": true },
+      { "text": "Excessive hydration", "isCorrect": false },
+      { "text": "Low cabin pressure", "isCorrect": false },
+      { "text": "Increased oxygen levels", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium",
+    "level": "ATPL"
+  },
+  {
+    "topic": "Human Performance",
+    "questionText": "What is hypoxia?",
+    "answers": [
+      { "text": "A lack of oxygen in the blood", "isCorrect": true },
+      { "text": "An increase in blood sugar", "isCorrect": false },
+      { "text": "A state of dehydration", "isCorrect": false },
+      { "text": "Excessive air pressure in the cabin", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "easy",
+    "level": "ATPL"
+  },
+  {
+    "topic": "Human Performance",
+    "questionText": "What is the main function of the vestibular system in aviation?",
+    "answers": [
+      {
+        "text": "Maintaining balance and spatial orientation",
+        "isCorrect": true
+      },
+      { "text": "Regulating blood oxygen levels", "isCorrect": false },
+      { "text": "Controlling body temperature", "isCorrect": false },
+      { "text": "Enhancing vision at night", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium",
+    "level": "ATPL"
   }
 ]
