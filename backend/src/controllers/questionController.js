@@ -71,22 +71,27 @@ const getQuestionsByTopic = async (req, res) => {
 const getAllQuestions = async (req, res) => {
   try {
     // BUILD THE QUERY
-    // 1) Filtering
+    // 1A) Filtering
     // Create a copy of the query object
     const queryObj = { ...req.query };
     // Exclude fields from the query object
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    // 2) Advanced filtering
+    // 1B) Advanced filtering
     // Han lägger [] i POSTMAN
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     console.log(JSON.parse(queryStr));
 
-    // The find method returns a query witch upon we can chain other methods.
-    const query = Question.find(JSON.parse(queryStr));
+    // The find method returns a query object witch upon we can chain other methods.
+    let query = Question.find(JSON.parse(queryStr));
 
+    // 2) Sorting
+    if (req.query.sort) {
+      // for example sort=difficulty,createdAt
+      query = query.sort(req.query.sort);
+    }
     // EXECUTE THE QUERY
     const questions = await query;
 

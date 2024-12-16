@@ -134,3 +134,22 @@ The database name is aeroquiz.
 --file users.json: The file to import.
 
 --jsonArray: Indicates that the file contains an array of JSON objects.
+
+# API Documentation:
+
+The AeroQuiz API provides functionality for managing quiz questions, topics, and related data. Below is a detailed explanation of available endpoints.
+
+BASE URL:
+
+- Local Development: `http://localhost:5000/api/v1/questions`
+
+## API Endpoints Table
+
+| API Endpoint | Method   | Description                                     |
+| ------------ | -------- | ----------------------------------------------- |
+| `/`          | `POST`   | Create one or more questions in the database.   |
+| `/`          | `GET`    | Retrieve all questions (with optional filters). |
+| `/topics`    | `GET`    | Retrieve a list of all unique topics.           |
+| `/:topic`    | `GET`    | Retrieve all questions for a specific topic.    |
+| `/:id`       | `DELETE` | Delete a specific question by its ID.           |
+| `/`          | `DELETE` | Delete all questions from the database.         |
