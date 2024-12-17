@@ -156,7 +156,7 @@ BASE URL:
 
 ---
 
-#### 1. Add Questions (POST)
+### 1. Add Questions (POST)
 
 - **Endpoint**: `/`
 - **Method**: `POST`
@@ -223,7 +223,7 @@ BASE URL:
 
 ---
 
-#### 2. Retrieve All Questions (GET /)
+### 2. Retrieve All Questions (GET /)
 
 - **Endpoint**: `/`
 - **Method**: `GET`
@@ -236,3 +236,155 @@ BASE URL:
 - level (e.g. ?level=ATPL)
 - topic (e.g. ?topic=Meteorology)
 - sort (e.g. ?sort=-difficulty,createdAt)
+
+**Example Request:**
+
+```bash
+GET /api/v1/questions?difficulty=medium&level=ATPL&sort=-createdAt
+```
+
+**Response Example:**
+
+```json
+{
+  "status": "success",
+  "results": 1,
+  "data": {
+    "questions": [
+      {
+        "_id": "6532abc456def7890fed1234",
+        "topic": "Meteorology",
+        "questionText": "What is the primary cause of turbulence?",
+        "answers": [
+          { "text": "Temperature changes", "isCorrect": false },
+          { "text": "Pressure variations", "isCorrect": false },
+          { "text": "Wind shear", "isCorrect": true },
+          { "text": "Humidity levels", "isCorrect": false }
+        ],
+        "questionType": "multiple-choice",
+        "difficulty": "medium",
+        "level": "ATPL",
+        "createdAt": "2024-06-16T14:23:12.789Z"
+      }
+    ]
+  }
+}
+```
+
+---
+
+### 3. Retrive All Topics (GET /topics)
+
+- **Endpoint**: `/topics`
+- **Method**: `GET`
+
+**Description**: Retrieve a list of all unique topics.
+
+**Example Request:**
+
+```bash
+GET /api/v1/questions/topics
+```
+
+**Response Example:**
+
+```json
+{
+  "status": "success",
+  "results": 3,
+  "data": {
+    "topics": ["Meteorology", "Navigation", "Principles of Flight"]
+  }
+}
+```
+
+---
+
+### 4. Retrieve Questions by Topic (GET /:topic)
+
+- **Endpoint**: `/:topic`
+- **Method**: `GET`
+
+**Description**: Retrieve all questions for a specific topic.
+
+**Example Request:**
+
+```json
+GET /api/v1/questions/Meteorology
+```
+
+**Response Example:**
+
+```json
+{
+  "status": "success",
+  "results": 1,
+  "data": {
+    "questions": [
+      {
+        "_id": "6532abc456def7890fed1234",
+        "topic": "Meteorology",
+        "questionText": "What is the primary cause of turbulence?",
+        "answers": [
+          { "text": "Temperature changes", "isCorrect": false },
+          { "text": "Pressure variations", "isCorrect": false },
+          { "text": "Wind shear", "isCorrect": true },
+          { "text": "Humidity levels", "isCorrect": false }
+        ],
+        "questionType": "multiple-choice",
+        "difficulty": "medium",
+        "level": "ATPL",
+        "createdAt": "2024-06-16T14:23:12.789Z"
+      }
+    ]
+  }
+}
+```
+
+---
+
+### 5. Delete a Question by ID (DELETE /:id)
+
+- **Endpoint**: `/:id`
+- **Method**: `DELETE`
+
+**Description**: Delete a specific question by its unique ID.
+
+**Example Request:**
+
+```json
+DELETE /api/v1/questions/6532abc456def7890fed1234
+```
+
+**Response Example:**
+
+```json
+{
+  "status": "success",
+  "message": "Question deleted successfully"
+}
+```
+
+---
+
+### 6. Delete All Questions (DELETE /)
+
+- **Endpoint**: `/`
+- **Method**: `DELETE`
+
+**Description**: Delete ALL Questions in the database.
+
+**Example Request:**
+
+```bash
+DELETE /api/v1/questions
+```
+
+**Response Example:**
+
+```json
+{
+  "status": "success",
+  "message": "All questions deleted successfully"
+}
+```
