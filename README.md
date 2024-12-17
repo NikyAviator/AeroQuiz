@@ -374,7 +374,7 @@ GET /api/v1/questions/Meteorology
 
 **Example Request:**
 
-```json
+```bash
 DELETE /api/v1/questions/6532abc456def7890fed1234
 ```
 
