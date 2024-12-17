@@ -2,6 +2,28 @@
 
 Fullstack Application
 
+## Table of Contents
+
+- [1. Frontend Setup](#1-frontend-setup)
+  - [Installing dependencies](#installing-dependencies)
+  - [To run](#to-run)
+  - [Customize](#customize)
+- [2. Running the Application](#2-running-the-application)
+- [3. MongoDB](#3-mongodb)
+  - [Import Dummy Data to MongoDB Atlas](#import-dummy-data-to-mongodb-atlas)
+- [4. API Documentation](#4-api-documentation)
+  - [API Endpoints Table](#api-endpoints-table)
+  - [1. Add Questions (POST)](#1-add-questions-post)
+  - [2. Retrieve All Questions (GET /)](#2-retrieve-all-questions-get-)
+  - [3. Retrieve All Topics (GET /topics)](#3-retrive-all-topics-get-topics)
+  - [4. Retrieve Questions by Topic (GET /:topic)](#4-retrieve-questions-by-topic-get-topic)
+  - [5. Delete a Question by ID (DELETE /:id)](#5-delete-a-question-by-id-delete-id)
+  - [6. Delete All Questions (DELETE /)](#6-delete-all-questions-delete-)
+
+---
+
+Fullstack Application
+
 # 1. Frontend:
 
 1. npm init vite@latest . (creates project in same folder)
