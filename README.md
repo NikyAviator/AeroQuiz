@@ -192,3 +192,47 @@ BASE URL:
   }
 ]
 ```
+
+### Response example:
+
+```json
+{
+  "status": "success",
+  "results": 1,
+  "data": {
+    "questions": [
+      {
+        "_id": "6532abc456def7890fed1234",
+        "topic": "Meteorology",
+        "questionText": "What is the primary cause of turbulence?",
+        "answers": [
+          { "text": "Temperature changes", "isCorrect": false },
+          { "text": "Pressure variations", "isCorrect": false },
+          { "text": "Wind shear", "isCorrect": true },
+          { "text": "Humidity levels", "isCorrect": false }
+        ],
+        "questionType": "multiple-choice",
+        "difficulty": "medium",
+        "level": "ATPL",
+        "createdAt": "2024-06-16T14:23:12.789Z"
+      }
+    ]
+  }
+}
+```
+
+---
+
+#### 2. Retrieve All Questions (GET /)
+
+- **Endpoint**: `/`
+- **Method**: `GET`
+
+**Description**: Retrieve all questions with optional filters.
+
+**Query Parameters**:
+
+- difficulty (e.g. ?difficulty=medium)
+- level (e.g. ?level=ATPL)
+- topic (e.g. ?topic=Meteorology)
+- sort (e.g. ?sort=-difficulty,createdAt)
