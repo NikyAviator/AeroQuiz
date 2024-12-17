@@ -153,3 +153,42 @@ BASE URL:
 | `/:topic`    | `GET`    | Retrieve all questions for a specific topic.    |
 | `/:id`       | `DELETE` | Delete a specific question by its ID.           |
 | `/`          | `DELETE` | Delete all questions from the database.         |
+
+---
+
+#### 1. Add Questions (POST)
+
+- **Endpoint**: `/`
+- **Method**: `POST`
+- **Body (raw JSON)**:
+
+```json
+[
+  {
+    "topic": "Meteorology",
+    "questionText": "What is the primary cause of turbulence?",
+    "answers": [
+      { "text": "Temperature changes", "isCorrect": false },
+      { "text": "Pressure variations", "isCorrect": false },
+      { "text": "Wind shear", "isCorrect": true },
+      { "text": "Humidity levels", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "medium",
+    "level": "ATPL"
+  },
+  {
+    "topic": "Navigation",
+    "questionText": "What instrument is used to measure altitude?",
+    "answers": [
+      { "text": "Altimeter", "isCorrect": true },
+      { "text": "Airspeed Indicator", "isCorrect": false },
+      { "text": "Vertical Speed Indicator", "isCorrect": false },
+      { "text": "Compass", "isCorrect": false }
+    ],
+    "questionType": "multiple-choice",
+    "difficulty": "easy",
+    "level": "ATPL"
+  }
+]
+```
