@@ -331,7 +331,7 @@ GET /api/v1/questions/topics
 
 **Example Request:**
 
-```json
+```bash
 GET /api/v1/questions/Meteorology
 ```
 
