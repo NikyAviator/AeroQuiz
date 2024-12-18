@@ -257,7 +257,7 @@ BASE URL:
 - difficulty (e.g. ?difficulty=medium)
 - level (e.g. ?level=ATPL)
 - topic (e.g. ?topic=Meteorology)
-- sort (e.g. ?sort=-difficulty,createdAt)
+- sort (e.g. ?sort=-difficulty,createdAt) (if you skip to sort, default is: -createdAt. Newest questions first)
 
 **Example Request:**
 
