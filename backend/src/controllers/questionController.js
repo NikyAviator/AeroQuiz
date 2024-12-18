@@ -96,6 +96,10 @@ const getAllQuestions = async (req, res) => {
       // for example sort=difficulty,createdAt
       query = query.sort(sortBy);
     }
+    // default sorting
+    else {
+      query = query.sort('-createdAt');
+    }
     // EXECUTE THE QUERY
     const questions = await query;
 
