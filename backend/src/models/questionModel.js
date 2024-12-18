@@ -48,9 +48,9 @@ const questionSchema = new mongoose.Schema({
     default: 'multiple-choice',
   },
   difficulty: {
-    type: String,
-    enum: ['easy', 'medium', 'hard'], // Optional difficulty levels
-    default: 'medium',
+    type: Number,
+    enum: [1, 2, 3], // 1: easy, 2: medium, 3: difficult
+    default: 2, // Default to medium difficulty
   },
   level: {
     type: String,

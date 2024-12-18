@@ -100,6 +100,9 @@ const getAllQuestions = async (req, res) => {
     else {
       query = query.sort('-createdAt');
     }
+
+    // 3) Field limiting
+
     // EXECUTE THE QUERY
     const questions = await query;
 
