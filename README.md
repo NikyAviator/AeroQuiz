@@ -196,7 +196,7 @@ BASE URL:
       { "text": "Humidity levels", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": "2",
     "level": "ATPL"
   },
   {
@@ -209,7 +209,7 @@ BASE URL:
       { "text": "Compass", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "easy",
+    "difficulty": "1",
     "level": "ATPL"
   }
 ]
@@ -234,7 +234,7 @@ BASE URL:
           { "text": "Humidity levels", "isCorrect": false }
         ],
         "questionType": "multiple-choice",
-        "difficulty": "medium",
+        "difficulty": "2",
         "level": "ATPL",
         "createdAt": "2024-06-16T14:23:12.789Z"
       }
@@ -254,7 +254,7 @@ BASE URL:
 
 **Query Parameters**:
 
-- difficulty (e.g. ?difficulty=medium)
+- difficulty (e.g. ?difficulty=2) (1-3. 1: easy, 2: medium, 3: difficult)
 - level (e.g. ?level=ATPL)
 - topic (e.g. ?topic=Meteorology)
 - sort (e.g. ?sort=-difficulty,createdAt) (if you skip to sort, default is: -createdAt. Newest questions first)
@@ -262,7 +262,7 @@ BASE URL:
 **Example Request:**
 
 ```bash
-GET /api/v1/questions?difficulty=medium&level=ATPL&sort=-createdAt
+GET /api/v1/questions?difficulty=2&level=ATPL&sort=-createdAt
 ```
 
 **Response Example:**
@@ -284,7 +284,7 @@ GET /api/v1/questions?difficulty=medium&level=ATPL&sort=-createdAt
           { "text": "Humidity levels", "isCorrect": false }
         ],
         "questionType": "multiple-choice",
-        "difficulty": "medium",
+        "difficulty": "2",
         "level": "ATPL",
         "createdAt": "2024-06-16T14:23:12.789Z"
       }
@@ -354,7 +354,7 @@ GET /api/v1/questions/Meteorology
           { "text": "Humidity levels", "isCorrect": false }
         ],
         "questionType": "multiple-choice",
-        "difficulty": "medium",
+        "difficulty": "2",
         "level": "ATPL",
         "createdAt": "2024-06-16T14:23:12.789Z"
       }
