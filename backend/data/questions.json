@@ -9,7 +9,7 @@
       { "text": "Humidity levels", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": 2,
     "level": "ATPL"
   },
   {
@@ -22,7 +22,7 @@
       { "text": "Temperature fluctuates rapidly", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": 2,
     "level": "ATPL"
   },
   {
@@ -35,7 +35,7 @@
       { "text": "Compass", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "easy",
+    "difficulty": 1,
     "level": "ATPL"
   },
   {
@@ -54,7 +54,7 @@
       { "text": "A magnetic compass route", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": 2,
     "level": "ATPL"
   },
   {
@@ -67,7 +67,7 @@
       { "text": "Lift depends on air density only", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": 2,
     "level": "ATPL"
   },
   {
@@ -80,7 +80,7 @@
       { "text": "It fluctuates unpredictably", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": 2,
     "level": "ATPL"
   },
   {
@@ -96,7 +96,7 @@
       }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": 2,
     "level": "ATPL"
   },
   {
@@ -115,7 +115,7 @@
       { "text": "To estimate aircraft range", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": 2,
     "level": "ATPL"
   },
   {
@@ -128,7 +128,7 @@
       { "text": "Increased oxygen levels", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": 2,
     "level": "ATPL"
   },
   {
@@ -141,7 +141,7 @@
       { "text": "Excessive air pressure in the cabin", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "easy",
+    "difficulty": 1,
     "level": "ATPL"
   },
   {
@@ -157,7 +157,7 @@
       { "text": "Enhancing vision at night", "isCorrect": false }
     ],
     "questionType": "multiple-choice",
-    "difficulty": "medium",
+    "difficulty": 3,
     "level": "ATPL"
   }
 ]
