@@ -89,8 +89,12 @@ const getAllQuestions = async (req, res) => {
 
     // 2) Sorting
     if (req.query.sort) {
+      // Detta är att byta ut kommatecken mot mellanslag för att kunna sortera på flera fält.
+      const sortBy = req.query.sort.split(',').join(' ');
+      // de går att sortera på flera fält genom att separera dem med kommatecken.
+      // - för att sortera i omvänd ordning
       // for example sort=difficulty,createdAt
-      query = query.sort(req.query.sort);
+      query = query.sort(sortBy);
     }
     // EXECUTE THE QUERY
     const questions = await query;
