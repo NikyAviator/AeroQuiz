@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+/* 2) Your global light/dark defaults */
+@layer base {
+  html, body {
+    /* default to white bg / dark to gray-900 bg */
+    @apply bg-white dark:bg-gray-900
+           text-gray-900 dark:text-gray-100;
+  }
+
+  a {
+    /* all links auto-invert */
+    @apply text-indigo-600 dark:text-indigo-400;
+  }
+
+  input, textarea, button {
+    /* consistent form control backgrounds & placeholders */
+    @apply bg-white dark:bg-white/5
+           placeholder-gray-400 dark:placeholder-gray-500;
+  }
+}
+
+/* 3) Your custom components */
+@layer components {
+  .btn-contact {
+    @apply mt-8 space-y-0 rounded-xl
+           border border-gray-200
+           bg-black/40 p-6 text-white
+           backdrop-blur-md
+           hover:bg-black/20;
+  }
+}
+
+/* 4) Your custom dark variant (if you still need it) */
+@custom-variant dark (&:where(.dark, .dark *));
