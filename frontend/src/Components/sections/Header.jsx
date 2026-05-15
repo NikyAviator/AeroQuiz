@@ -7,7 +7,7 @@ import {
   SunIcon,
   MoonIcon,
 } from '@heroicons/react/24/outline';
-import useDarkMode from './hooks/useDarkMode';
+import useDarkMode from '../hooks/useDarkMode.jsx';
 import { Link } from 'react-router-dom';
 
 // All nav links defined in one place — easy to add/remove links here
