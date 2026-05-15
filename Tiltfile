@@ -24,7 +24,7 @@ k8s_yaml([
 ])
 
 # --- Tilt UX ---
-k8s_resource('frontend', port_forwards=[])
+k8s_resource('frontend', port_forwards=['8080:8080'])
 # k8s_resource('backend', port_forwards=[])
 
 # Run ingress port-forward as a background process owned by Tilt
