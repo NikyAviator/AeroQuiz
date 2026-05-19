@@ -1,84 +1,114 @@
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import { Link } from 'react-router-dom';
 
-export default function Example() {
+// Simple inline SVG airplane logo — no external deps needed
+function AirplaneLogo({ className = 'h-11 w-11' }) {
   return (
-    <div className="bg-white">
-      <div className="bg-linear-to-b relative isolate overflow-hidden from-indigo-100/20">
+    <svg
+      className={className}
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      {/* Fuselage */}
+      <path
+        d="M8 32 L52 18 L56 32 L52 46 Z"
+        fill="#4f46e5"
+        className="dark:fill-indigo-400"
+      />
+      {/* Main wing */}
+      <path
+        d="M20 32 L44 14 L48 20 L28 32 Z"
+        fill="#818cf8"
+        className="dark:fill-indigo-300"
+      />
+      {/* Tail wing */}
+      <path
+        d="M8 32 L18 22 L22 27 L14 32 Z"
+        fill="#818cf8"
+        className="dark:fill-indigo-300"
+      />
+      {/* Lower wing */}
+      <path
+        d="M20 32 L44 50 L48 44 L28 32 Z"
+        fill="#6366f1"
+        className="dark:fill-indigo-400"
+      />
+    </svg>
+  );
+}
+
+export default function HomePageTop() {
+  return (
+    <div className="bg-white dark:bg-gray-900">
+      <div className="bg-linear-to-b relative isolate overflow-hidden from-indigo-100/20 dark:from-indigo-900/20">
         <div className="mx-auto max-w-7xl pb-24 pt-10 sm:pb-32 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-40">
+          {/* ── Left: Text content ── */}
           <div className="px-6 lg:px-0 lg:pt-4">
             <div className="mx-auto max-w-2xl">
               <div className="max-w-lg">
-                <img
-                  alt="Your Company"
-                  src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                  className="h-11"
-                />
-                <div className="mt-24 sm:mt-32 lg:mt-16">
-                  <a href="#" className="inline-flex space-x-6">
-                    <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm/6 font-semibold text-indigo-600 ring-1 ring-inset ring-indigo-600/20">
-                      What's new
-                    </span>
-                    <span className="inline-flex items-center space-x-2 text-sm/6 font-medium text-gray-600">
-                      <span>Just shipped v1.0</span>
-                      <ChevronRightIcon
-                        aria-hidden="true"
-                        className="size-5 text-gray-400"
-                      />
-                    </span>
-                  </a>
-                </div>
-                <h1 className="mt-10 text-pretty text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">
-                  Welcome to Aeroquiz!
+                {/* Airplane logo */}
+                <AirplaneLogo className="h-12 w-12" />
+
+                {/* Heading */}
+                <h1 className="mt-10 text-pretty text-5xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-7xl">
+                  Welcome to AeroQuiz!
                 </h1>
-                <p className="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8">
-                  This is a platform that will help you pass your aeronautical
-                  knowledge exams with ease. We provide a comprehensive
-                  collection of practice questions and answers. Whether you're a
-                  student pilot or an experienced aviator, Aeroquiz is designed
-                  to support your learning journey and boost your confidence for
-                  the exams ahead.
+
+                {/* Description */}
+                <p className="mt-8 text-pretty text-lg font-medium text-gray-500 dark:text-gray-400 sm:text-xl/8">
+                  A platform designed to help you pass your aeronautical
+                  knowledge exams with confidence. Whether you're a student
+                  pilot or an experienced aviator, AeroQuiz has the practice
+                  questions to get you ready.
                 </p>
+
+                {/* CTAs */}
                 <div className="mt-10 flex items-center gap-x-6">
-                  <a
-                    href="#"
+                  <Link
+                    to="/register"
                     className="shadow-xs rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
-                    Documentation
-                  </a>
-                  <a href="#" className="text-sm/6 font-semibold text-gray-900">
+                    Get Started
+                  </Link>
+                  <a
+                    href="https://github.com/NikyAviator/AeroQuiz"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm/6 font-semibold text-gray-900 dark:text-gray-100"
+                  >
                     View on GitHub <span aria-hidden="true">→</span>
                   </a>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* ── Right: Hero image ── */}
           <div className="mt-20 sm:mt-24 md:mx-auto md:max-w-2xl lg:mx-0 lg:mt-0 lg:w-screen">
+            {/* Decorative background skew */}
             <div
               aria-hidden="true"
-              className="absolute inset-y-0 right-1/2 -z-10 -mr-10 w-[200%] skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 md:-mr-20 lg:-mr-36"
+              className="absolute inset-y-0 right-1/2 -z-10 -mr-10 w-[200%] skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 dark:bg-gray-900 dark:shadow-indigo-900/20 dark:ring-indigo-900/30 md:-mr-20 lg:-mr-36"
             />
+
             <div className="shadow-lg md:rounded-3xl">
-              <div className="bg-indigo-500 [clip-path:inset(0)] md:[clip-path:inset(0_round_var(--radius-3xl))]">
+              <div className="bg-indigo-500 [clip-path:inset(0)] dark:bg-indigo-800 md:[clip-path:inset(0_round_var(--radius-3xl))]">
                 <div
                   aria-hidden="true"
                   className="inset-ring inset-ring-white absolute -inset-y-px left-1/2 -z-10 ml-10 w-[200%] skew-x-[-30deg] bg-indigo-100 opacity-20 md:ml-20 lg:ml-36"
                 />
+
+                {/* pic1.jpg as the hero visual */}
                 <div className="relative px-6 pt-8 sm:pt-16 md:pl-16 md:pr-0">
                   <div className="mx-auto max-w-2xl md:mx-0 md:max-w-none">
-                    <div className="w-screen overflow-hidden rounded-tl-xl bg-gray-900">
-                      <div className="flex bg-gray-800/40 ring-1 ring-white/5">
-                        <div className="-mb-px flex text-sm/6 font-medium text-gray-400">
-                          <div className="border-b border-r border-b-white/20 border-r-white/10 bg-white/5 px-4 py-2 text-white">
-                            NotificationSetting.jsx
-                          </div>
-                          <div className="border-r border-gray-600/10 px-4 py-2">
-                            App.jsx
-                          </div>
-                        </div>
-                      </div>
-                      <div className="px-6 pb-14 pt-6">
-                        {/* Your code example */}
-                      </div>
+                    <div className="w-screen overflow-hidden rounded-tl-xl">
+                      <img
+                        src="/images/pic1.jpg"
+                        alt="Aviation hero"
+                        className="object-cover object-center"
+                        style={{ maxHeight: '420px' }}
+                      />
                     </div>
                   </div>
                   <div
@@ -90,7 +120,9 @@ export default function Example() {
             </div>
           </div>
         </div>
-        <div className="bg-linear-to-t absolute inset-x-0 bottom-0 -z-10 h-24 from-white sm:h-32" />
+
+        {/* Bottom fade */}
+        <div className="bg-linear-to-t absolute inset-x-0 bottom-0 -z-10 h-24 from-white dark:from-gray-900 sm:h-32" />
       </div>
     </div>
   );
