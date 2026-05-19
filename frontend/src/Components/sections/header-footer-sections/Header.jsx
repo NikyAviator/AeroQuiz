@@ -14,8 +14,8 @@ import { Link } from 'react-router-dom';
 const navLinks = [
   { to: '/', label: 'Home' },
   // { to: '/about', label: 'About' },
-  // { to: '/services', label: 'Services' },
-  // { to: '/blog', label: 'Blog' },
+  // { to: '/quiz', label: 'Quiz' },
+  // { to: '/login', label: 'Login' },
 ];
 
 // Reusable link style — apply to both desktop and mobile links
@@ -30,7 +30,8 @@ export default function Header() {
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   return (
-    <header className="border-b border-gray-100 bg-white dark:border-gray-800 dark:bg-gray-900">
+    // Slightly tinted indigo-50 in light, deep gray-950 in dark — distinct from the white page body
+    <header className="border-b border-indigo-100 bg-indigo-50 dark:border-gray-800 dark:bg-gray-950">
       <nav
         aria-label="Global"
         className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8"
@@ -55,11 +56,11 @@ export default function Header() {
 
         {/* ── 3. Right side controls (always visible) ── */}
         <div className="flex items-center gap-2">
-          {/* Theme toggle — one button, works for both desktop and mobile */}
+          {/* Theme toggle */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="rounded-md p-2 text-indigo-600 ring-1 ring-indigo-600/30 transition-colors duration-150 hover:bg-indigo-600/10 dark:text-indigo-400"
+            className="rounded-md p-2 text-indigo-600 ring-1 ring-indigo-600/30 transition-colors duration-150 hover:bg-indigo-600/10 dark:text-indigo-400 dark:ring-indigo-400/30 dark:hover:bg-indigo-400/10"
           >
             {dark ? (
               <SunIcon className="size-5" />
@@ -72,7 +73,7 @@ export default function Header() {
           <button
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
-            className="rounded-md p-2 text-indigo-600 transition-colors duration-150 hover:bg-indigo-600/10 lg:hidden"
+            className="rounded-md p-2 text-indigo-600 transition-colors duration-150 hover:bg-indigo-600/10 dark:text-indigo-400 lg:hidden"
           >
             <Bars3Icon className="size-6" />
           </button>
@@ -84,7 +85,7 @@ export default function Header() {
         {/* Dim backdrop */}
         <div className="fixed inset-0 z-10 bg-black/40" />
 
-        <DialogPanel className="fixed inset-y-0 right-0 z-20 w-full max-w-sm overflow-y-auto bg-white px-6 py-6 dark:bg-gray-900 sm:ring-1 sm:ring-gray-900/10">
+        <DialogPanel className="fixed inset-y-0 right-0 z-20 w-full max-w-sm overflow-y-auto bg-indigo-50 px-6 py-6 dark:bg-gray-950 sm:ring-1 sm:ring-indigo-100 dark:sm:ring-gray-800">
           {/* Top row: brand (left) — close button (right) */}
           <div className="mb-8 flex items-center justify-between">
             <Link
@@ -98,7 +99,7 @@ export default function Header() {
             <button
               onClick={closeMobile}
               aria-label="Close menu"
-              className="rounded-md p-2 text-indigo-600 transition-colors duration-150 hover:bg-indigo-600/10"
+              className="rounded-md p-2 text-indigo-600 transition-colors duration-150 hover:bg-indigo-600/10 dark:text-indigo-400"
             >
               <XMarkIcon className="size-6" />
             </button>
