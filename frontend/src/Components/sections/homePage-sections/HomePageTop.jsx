@@ -28,11 +28,15 @@ export default function Example() {
                   </a>
                 </div>
                 <h1 className="mt-10 text-pretty text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">
-                  Supercharge your web app
+                  Welcome to Aeroquiz!
                 </h1>
                 <p className="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8">
-                  Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure
-                  qui lorem cupidatat commodo.
+                  This is a platform that will help you pass your aeronautical
+                  knowledge exams with ease. We provide a comprehensive
+                  collection of practice questions and answers. Whether you're a
+                  student pilot or an experienced aviator, Aeroquiz is designed
+                  to support your learning journey and boost your confidence for
+                  the exams ahead.
                 </p>
                 <div className="mt-10 flex items-center gap-x-6">
                   <a
