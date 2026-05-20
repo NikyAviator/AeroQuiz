@@ -1,42 +1,5 @@
 import { Link } from 'react-router-dom';
-
-// Simple inline SVG airplane logo — no external deps needed
-function AirplaneLogo({ className = 'h-11 w-11' }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      {/* Fuselage */}
-      <path
-        d="M8 32 L52 18 L56 32 L52 46 Z"
-        fill="#4f46e5"
-        className="dark:fill-indigo-400"
-      />
-      {/* Main wing */}
-      <path
-        d="M20 32 L44 14 L48 20 L28 32 Z"
-        fill="#818cf8"
-        className="dark:fill-indigo-300"
-      />
-      {/* Tail wing */}
-      <path
-        d="M8 32 L18 22 L22 27 L14 32 Z"
-        fill="#818cf8"
-        className="dark:fill-indigo-300"
-      />
-      {/* Lower wing */}
-      <path
-        d="M20 32 L44 50 L48 44 L28 32 Z"
-        fill="#6366f1"
-        className="dark:fill-indigo-400"
-      />
-    </svg>
-  );
-}
+import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
 export default function HomePageTop() {
   return (
@@ -48,7 +11,7 @@ export default function HomePageTop() {
             <div className="mx-auto max-w-2xl">
               <div className="max-w-lg">
                 {/* Airplane logo */}
-                <AirplaneLogo className="h-12 w-12" />
+                <PaperAirplaneIcon className="h-12 w-12 text-indigo-600" />
 
                 {/* Heading */}
                 <h1 className="mt-10 text-pretty text-5xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-7xl">
