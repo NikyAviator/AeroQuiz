@@ -74,10 +74,10 @@ export default function SignIn() {
           <p className="mt-10 text-center text-sm/6 text-gray-500 dark:text-gray-400">
             Not a member?{' '}
             <a
-              href="#"
+              href="/register"
               className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
             >
-              Start a 14 day free trial
+              Register a new account here
             </a>
           </p>
         </div>
