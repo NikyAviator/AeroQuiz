@@ -24,7 +24,7 @@ export default function HomePageTop() {
                   knowledge exams with confidence. Whether you're a student
                   pilot or an experienced aviator, AeroQuiz has the practice
                   questions to get you ready for your future exams and
-                  endeavours.
+                  endeavors.
                 </p>
 
                 {/* CTAs */}
