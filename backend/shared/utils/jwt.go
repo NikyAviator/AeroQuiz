@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
+	"github.com/NikyAviator/AeroQuiz/backend/shared/env"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/nikyaviator/AeroQuiz/backend/shared/env"
 )
 
 var secretKey = env.GetString("SECRET_KEY", "defaultsecretkey")
