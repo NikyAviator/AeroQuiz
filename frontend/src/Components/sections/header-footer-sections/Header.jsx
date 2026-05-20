@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/signin', label: 'Sign In' },
+  { to: '/register', label: 'Register' },
 ];
 
 // Reusable link style — apply to both desktop and mobile links
