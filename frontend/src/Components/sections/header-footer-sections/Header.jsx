@@ -6,6 +6,7 @@ import {
   XMarkIcon,
   SunIcon,
   MoonIcon,
+  PaperAirplaneIcon,
 } from '@heroicons/react/24/outline';
 import useDarkMode from '../../hooks/useDarkMode.jsx';
 import { Link } from 'react-router-dom';
@@ -13,10 +14,7 @@ import { Link } from 'react-router-dom';
 // All nav links defined in one place — easy to add/remove links here
 const navLinks = [
   { to: '/', label: 'Home' },
-  // { to: '/about', label: 'About' },
   { to: '/signin', label: 'Sign In' },
-  // { to: '/quiz', label: 'Quiz' },
-  // { to: '/login', label: 'Login' },
 ];
 
 // Reusable link style — apply to both desktop and mobile links
@@ -40,10 +38,11 @@ export default function Header() {
         {/* ── 1. Brand (always left) ── */}
         <Link
           to="/"
-          className="-m-1.5 p-1.5 text-xl font-bold text-yellow-500 transition-colors duration-150 hover:text-yellow-400"
+          className="-m-1.5 flex items-center gap-2 p-1.5 text-xl font-bold text-yellow-500 transition-colors duration-150 hover:text-yellow-400"
           onClick={closeMobile}
         >
           AeroQuiz
+          <PaperAirplaneIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
         </Link>
 
         {/* ── 2. Desktop nav links (center, hidden on mobile) ── */}
