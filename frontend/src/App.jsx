@@ -3,6 +3,7 @@ import Header from './Components/sections/header-footer-sections/Header.jsx';
 import HomePage from './Pages/HomePage.jsx';
 import Footer from './Components/sections/header-footer-sections/Footer.jsx';
 import ScrollToTopButton from './Components/ui/ScrollToTopButton.jsx';
+import SignIn from './Pages/register-signin/SignIn.jsx';
 import './styles.css';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <main className="relative grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/signin" element={<SignIn />} />
           </Routes>
           <ScrollToTopButton />
         </main>

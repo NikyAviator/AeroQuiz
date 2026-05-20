@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 const navLinks = [
   { to: '/', label: 'Home' },
   // { to: '/about', label: 'About' },
+  { to: '/signin', label: 'Sign In' },
   // { to: '/quiz', label: 'Quiz' },
   // { to: '/login', label: 'Login' },
 ];
