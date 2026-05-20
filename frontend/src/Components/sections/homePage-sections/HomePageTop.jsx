@@ -23,7 +23,8 @@ export default function HomePageTop() {
                   A platform designed to help you pass your aeronautical
                   knowledge exams with confidence. Whether you're a student
                   pilot or an experienced aviator, AeroQuiz has the practice
-                  questions to get you ready.
+                  questions to get you ready for your future exams and
+                  endeavours.
                 </p>
 
                 {/* CTAs */}
