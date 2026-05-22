@@ -1,6 +1,13 @@
 package cmd
 
-import "github.com/NikyAviator/AeroQuiz/backend/shared/env"
+import (
+	"context"
+	"log"
+	"time"
+
+	"github.com/NikyAviator/AeroQuiz/backend/shared/env"
+	sharedmongo "github.com/NikyAviator/AeroQuiz/backend/shared/mongo"
+)
 
 func main() {
 	// DB Config (loads from env)
@@ -11,5 +18,13 @@ func main() {
 	apiSharedSecret := env.GetString("API_SHARED_SECRET", "")
 
 	// Mongo connect
-
+	_, db, closeMongo, err := sharedmongo.ConnectMongoDB(context.Background(), sharedmongo.MongoConfig{
+		URI:         mongoURI,
+		DBName:      dbName,
+		ConnTimeout: 30 * time.Second,
+	})
+	if err != nil {
+		log.Fatal("mongo connect:", err)
+	}
+	defer func() { _ = closeMongo(context.Background()) }()
 }
