@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/repository"
 	"github.com/NikyAviator/AeroQuiz/backend/shared/env"
 	sharedmongo "github.com/NikyAviator/AeroQuiz/backend/shared/mongo"
 )
@@ -27,4 +28,12 @@ func main() {
 		log.Fatal("mongo connect:", err)
 	}
 	defer func() { _ = closeMongo(context.Background()) }()
+
+	// DI: repo layers
+	userRepo := repository.NewMongoUserRepository(db)
+
+	// Ensure indexes
+	if err := userRepo.EnsureIndexes(context.Background()); err != nil {
+		log.Fatal("ensure user indexes:", err)
+	}
 }
