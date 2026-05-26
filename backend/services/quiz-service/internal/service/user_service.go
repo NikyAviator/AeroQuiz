@@ -1,3 +1,6 @@
+// Package service contains the business logic for user management in the quiz-service. It defines the UserService struct and its methods for registering and logging in users.
+// The service interacts with the repository layer to perform database operations and uses utility functions for password hashing and token generation.
+// This is where we enforce rules like unique emails, password security, and admin privileges based on email.
 package service
 
 import (

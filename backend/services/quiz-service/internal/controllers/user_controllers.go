@@ -1,3 +1,4 @@
+// Package controllers contains the HTTP handlers for user-related endpoints (registration, login). For AeroQuiz: quiz-service.
 package controllers
 
 import (

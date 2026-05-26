@@ -1,3 +1,4 @@
+// Package repository contains the data access layer for the quiz-service. It defines interfaces and concrete implementations for interacting with the database (MongoDB in this case).
 package repository
 
 import (

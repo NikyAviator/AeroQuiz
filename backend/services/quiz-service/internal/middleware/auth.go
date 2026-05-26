@@ -1,3 +1,5 @@
+// Package middleware contains Gin middleware functions for the quiz-service, such as authentication and logging.
+// This is where we can define reusable middleware that can be applied to routes or groups of routes.
 package middleware
 
 import (

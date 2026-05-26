@@ -1,3 +1,4 @@
+// Package domain contains the core data structures for the quiz-service, such as User and request payloads. This is where we define the shape of our data and any related validation tags.
 package domain
 
 import (

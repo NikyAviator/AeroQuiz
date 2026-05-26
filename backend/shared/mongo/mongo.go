@@ -1,3 +1,5 @@
+// Package mongo provides a helper function to connect to MongoDB with a simple configuration struct.
+// It handles connection setup, ping verification, and provides a cleanup function for graceful shutdown.
 package mongo
 
 import (

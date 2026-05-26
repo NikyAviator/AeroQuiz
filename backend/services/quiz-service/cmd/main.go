@@ -1,3 +1,4 @@
+// This is the main entry point for the quiz-service. It sets up the HTTP server, connects to MongoDB, and wires up the routes and controllers.
 package main
 
 import (
@@ -20,7 +21,7 @@ import (
 )
 
 func main() {
-	// ── 1. Load config from environment ──────────────────────────────────────
+	// 1. Load config from environment
 	mongoURI := env.GetString("MONGODB_URI", "mongodb://localhost:27017")
 	dbName := env.GetString("MONGODB_DBNAME", "aeroquiz")
 	port := env.GetString("PORT", "5000")
@@ -28,7 +29,7 @@ func main() {
 	apiSharedSecret := env.GetString("API_SHARED_SECRET", "") // reserved for service-to-service auth
 	_ = apiSharedSecret
 
-	// ── 2. Connect to MongoDB ─────────────────────────────────────────────────
+	// 2. Connect to MongoDB
 	_, db, closeMongo, err := sharedmongo.ConnectMongoDB(context.Background(), sharedmongo.MongoConfig{
 		URI:         mongoURI,
 		DBName:      dbName,
@@ -45,18 +46,18 @@ func main() {
 		}
 	}()
 
-	// ── 3. Ensure indexes (runs quickly; safe to call on every startup) ───────
+	// 3. Ensure indexes (runs quickly; safe to call on every startup) ───────
 	userRepo := repository.NewMongoUserRepository(db)
 	if err := userRepo.EnsureIndexes(context.Background()); err != nil {
 		log.Fatalf("ensure user indexes: %v", err)
 	}
 
-	// ── 4. Wire up the dependency graph ──────────────────────────────────────
+	// 4. Wire up the dependencies
 	//   repo → service → controller → routes
 	userSvc := service.NewUserService(userRepo, adminEmail)
 	userCtrl := controllers.NewUserController(userSvc)
 
-	// ── 5. Set up Gin router ──────────────────────────────────────────────────
+	// 5. Set up Gin router
 	router := gin.Default()
 
 	// Global middleware can go here, e.g. CORS, request-id, rate-limiting
@@ -65,7 +66,7 @@ func main() {
 	api := router.Group("/api/v1")
 	v1.RegisterRoutes(api, userCtrl)
 
-	// ── 6. Start the HTTP server concurrently ─────────────────────────────────
+	// 6. Start the HTTP server concurrently
 	// The server runs in its own goroutine so the main goroutine can listen
 	// for OS signals and perform a graceful shutdown.
 	srv := &http.Server{
@@ -80,7 +81,7 @@ func main() {
 		}
 	}()
 
-	// ── 7. Graceful shutdown on SIGINT / SIGTERM ──────────────────────────────
+	// 7. Graceful shutdown on SIGINT / SIGTERM
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit // block here until a signal arrives

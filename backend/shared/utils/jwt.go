@@ -1,3 +1,5 @@
+// Package utils contains utility functions for JWT token generation and verification for the quiz-service.
+// This is where we handle the creation of JWT tokens during user login and the validation of tokens for protected routes.
 package utils
 
 import (
