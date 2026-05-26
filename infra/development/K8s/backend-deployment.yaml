@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: backend-image
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: GIN_MODE
+              value: release
+            - name: API_SHARED_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: quiz-service-env
+                  key: API_SHARED_SECRET
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: quiz-service-env
+                  key: SECRET_KEY
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: quiz-service-env
+                  key: MONGODB_URI
+            - name: MONGODB_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: quiz-service-env
+                  key: MONGODB_DBNAME
+            - name: ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: quiz-service-env
+                  key: ADMIN_EMAIL
+          resources:
+            requests:
+              memory: '64Mi'
+              cpu: '50m'
+            limits:
+              memory: '128Mi'
+              cpu: '100m'
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
