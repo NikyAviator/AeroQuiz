@@ -74,7 +74,7 @@ func (s *UserService) RegisterUser(ctx context.Context, req domain.RegisterReque
 	}
 
 	// 5. Persist — repo handles the actual MongoDB insert
-	if err := s.repo.CreateUser(ctx, user); err != nil {
+	if err := s.repo.Create(ctx, user); err != nil {
 		return nil, err
 	}
 
