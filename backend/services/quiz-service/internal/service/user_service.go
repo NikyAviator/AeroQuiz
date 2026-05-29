@@ -1,5 +1,7 @@
-// Package service contains the business logic for user management in the quiz-service. It defines the UserService struct and its methods for registering and logging in users.
-// The service interacts with the repository layer to perform database operations and uses utility functions for password hashing and token generation.
+// Package service contains the business logic for user management in the quiz-service.
+// It defines the UserService struct and its methods for registering and logging in users.
+// The service interacts with the repository layer to perform database operations and uses
+// utility functions for password hashing and token generation.
 // This is where we enforce rules like unique emails, password security, and admin privileges based on email.
 package service
 
@@ -14,6 +16,14 @@ import (
 	"github.com/NikyAviator/AeroQuiz/backend/shared/utils"
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
+
+// UserServiceInterface defines the business operations the controller depends on.
+// The controller imports this interface — not the concrete struct — keeping the
+// layers properly decoupled and easy to mock in tests.
+type UserServiceInterface interface {
+	RegisterUser(ctx context.Context, req domain.RegisterRequest) (*domain.User, error)
+	LoginUser(ctx context.Context, req domain.LoginRequest) (string, error)
+}
 
 // UserService handles all user-related business logic.
 type UserService struct {

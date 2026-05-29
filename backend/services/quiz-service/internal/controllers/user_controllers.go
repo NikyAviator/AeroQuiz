@@ -1,27 +1,33 @@
-// Package controllers contains the HTTP handlers for user-related endpoints (registration, login). For AeroQuiz: quiz-service.
+// Package controllers contains the HTTP handlers for user-related endpoints
+// (registration, login). For AeroQuiz: quiz-service.
+// Controllers are responsible only for HTTP concerns — binding, status codes,
+// responses. All business logic lives in the service layer.
 package controllers
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/domain"
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
-// UserController holds a reference to the service layer.
-// It is responsible only for HTTP concerns — binding, status codes, responses.
+// UserController holds a reference to the service layer via its interface.
+// Depending on the interface (not the concrete struct) keeps the layers
+// decoupled and makes the controller easy to test with a mock service.
 type UserController struct {
-	userService *service.UserService
+	userService service.UserServiceInterface
 }
 
 // NewUserController constructs a UserController with its service injected.
-func NewUserController(userService *service.UserService) *UserController {
+func NewUserController(userService service.UserServiceInterface) *UserController {
 	return &UserController{userService: userService}
 }
 
 // Register godoc
-// POST /api/v1/register
+// POST /api/v1/auth/register
 func (uc *UserController) Register(c *gin.Context) {
 	var req domain.RegisterRequest
 
@@ -31,9 +37,12 @@ func (uc *UserController) Register(c *gin.Context) {
 		return
 	}
 
-	user, err := uc.userService.RegisterUser(c.Request.Context(), req)
+	// Timeout: don't let a slow DB hang this goroutine forever
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	user, err := uc.userService.RegisterUser(ctx, req)
 	if err != nil {
-		// "email already registered" is a client error; everything else is a server error
 		if err.Error() == "email already registered" {
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 			return
@@ -52,7 +61,7 @@ func (uc *UserController) Register(c *gin.Context) {
 }
 
 // Login godoc
-// POST /api/v1/login
+// POST /api/v1/auth/login
 func (uc *UserController) Login(c *gin.Context) {
 	var req domain.LoginRequest
 
@@ -61,7 +70,11 @@ func (uc *UserController) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := uc.userService.LoginUser(c.Request.Context(), req)
+	// Timeout: bcrypt + DB round-trip should never take more than 10s
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	token, err := uc.userService.LoginUser(ctx, req)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
 		return
