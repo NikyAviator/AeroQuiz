@@ -18,18 +18,18 @@ import (
 // Depending on the interface (not the concrete struct) keeps the layers
 // decoupled and makes the controller easy to test with a mock service.
 type UserController struct {
-	userService service.UserServiceInterface
+	userService service.UserService
 }
 
 // NewUserController constructs a UserController with its service injected.
-func NewUserController(userService service.UserServiceInterface) *UserController {
+func NewUserController(userService service.UserService) *UserController {
 	return &UserController{userService: userService}
 }
 
 // Register godoc
 // POST /api/v1/auth/register
 func (uc *UserController) Register(c *gin.Context) {
-	var req domain.RegisterRequest
+	var req domain.LoginRequest
 
 	// ShouldBindJSON validates the struct tags (required, email, min=8)
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -41,7 +41,7 @@ func (uc *UserController) Register(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	user, err := uc.userService.RegisterUser(ctx, req)
+	user, err := uc.userService.CreateUser(ctx, req)
 	if err != nil {
 		if err.Error() == "email already registered" {
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
