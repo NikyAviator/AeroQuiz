@@ -39,6 +39,7 @@ require (
 require (
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/klauspost/compress v1.17.11 // indirect
+	github.com/nikyaviator/nikolai-kocev-v2/backend v0.0.0-20260529151056-ee12a336be53
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.2.0 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
