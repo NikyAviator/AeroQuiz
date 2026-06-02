@@ -48,7 +48,7 @@ func main() {
 		}
 	}()
 
-	// 3. Ensure indexes — safe to call on every startup
+	// 3. DI repo layer & Ensure indexes — safe to call on every startup
 	userRepo := repository.NewMongoUserRepository(db)
 	if err := userRepo.EnsureIndexes(context.Background()); err != nil {
 		log.Fatalf("ensure user indexes: %v", err)
