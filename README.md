@@ -108,3 +108,71 @@ To check that it is created from correct file & Security Header check
 kubectl get secret quiz-service-env -o
 kubectl exec -it <backend-pod-name> -- env | grep API_SHARED_SECRET
 ```
+
+---
+
+### Scripts
+
+To get a clear snapshot of any project you are working on, use:
+
+```bash
+tree -I 'node_modules|.git|dist' -a -L 10
+```
+
+To update **ALL** dependencies in the project, cd inte **/scripts** folder and run:
+
+```bash
+./update-all.sh
+```
+
+## DevOps
+
+### Handy DevOps commands for local dev:
+
+From the **repo root**, simply run (and do not forget to have your minikube instance running):
+
+```bash
+tilt up
+```
+
+### Stopping / Cleaning Up
+
+When you’re done and other minikube commands:
+
+```bash
+tilt down      # stops all Tilt resources
+minikube stop  # shuts down the cluster (keeps data)
+---
+minikube config view # resources
+minikube status
+minikube profile list
+minikube --help
+```
+
+or to nuke everything, use:
+
+```bash
+minikube delete --all --purge   # removes the cluster completely
+```
+
+but only when:
+
+- Changed driver / core config (e.g. switched from Docker Desktop to native Docker)
+
+- Changed CPU/memory/disk size in a way that requires fresh node
+
+- The cluster is completely borked and not worth debugging
+
+###
+
+To recreate stale pods:
+
+```bash
+tilt down
+kubectl get all
+kubectl get pods
+kubectl delete pod --all
+tilt up
+---
+tilt logs -f
+```
