@@ -33,13 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("mongo connect: %v", err)
 	}
-	defer func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		if err := closeMongo(ctx); err != nil {
-			log.Printf("mongo disconnect error: %v", err)
-		}
-	}()
+	defer func() { _ = closeMongo(context.Background()) }()
 
 	// DI: repo layers
 	userRepo := repository.NewMongoUserRepository(db)
