@@ -6,8 +6,13 @@ import (
 	"log"
 	"time"
 
+	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/middleware"
+	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/repository"
+	v1 "github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/routes/v1"
+	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/service"
 	"github.com/NikyAviator/AeroQuiz/backend/shared/env"
 	sharedmongo "github.com/NikyAviator/AeroQuiz/backend/shared/mongo"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -36,4 +41,29 @@ func main() {
 		}
 	}()
 
+	// DI: repo layers
+	userRepo := repository.NewMongoUserRepository(db)
+
+	// Ensure indexes
+	if err := userRepo.EnsureIndexes(context.Background()); err != nil {
+		log.Fatalf("ensure user indexes: %v", err)
+	}
+
+	// DI: services layers
+	userSvc := service.NewUserService(userRepo)
+
+	// Middleware
+	mws := middleware.NewAuth(userSvc, adminEmail, apiSharedSecret)
+
+	// HTTP & Options
+	r := gin.Default()
+	v1.Regsiter(r, userSvc, v1.Options{
+		MW:              mws,
+		AdminEmail:      adminEmail,
+		ApiSharedSecret: apiSharedSecret,
+	})
+
+	if err := r.Run(":" + port); err != nil {
+		log.Fatalf("failed to run server: %v", err)
+	}
 }
