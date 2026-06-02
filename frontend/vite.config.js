@@ -9,7 +9,7 @@ export default defineConfig({
   // Vite forwards requests to the GO backend API
   server: {
     proxy: {
-      '/api': 'http://localhost:5000',
+      '/api/v1': 'http://localhost:5000',
     },
   },
 });
