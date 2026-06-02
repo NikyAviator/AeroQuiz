@@ -21,8 +21,7 @@ func main() {
 	dbName := env.GetString("MONGODB_DBNAME", "aeroquiz")
 	port := env.GetString("PORT", "5000")
 	adminEmail := env.GetString("ADMIN_EMAIL", "")
-	apiSharedSecret := env.GetString("API_SHARED_SECRET", "") // reserved for service-to-service auth
-	_ = apiSharedSecret
+	apiSharedSecret := env.GetString("API_SHARED_SECRET", "")
 
 	// 2. Connect to MongoDB
 	_, db, closeMongo, err := sharedmongo.ConnectMongoDB(context.Background(), sharedmongo.MongoConfig{
