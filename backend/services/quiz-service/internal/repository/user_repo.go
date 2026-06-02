@@ -1,4 +1,6 @@
-// AeroQuiz. Package repository contains the data access layer for the quiz-service. It defines interfaces and concrete implementations for interacting with the database (MongoDB in this case).
+// Package repository contains the data access layer for the quiz-service.
+// It defines interfaces and concrete MongoDB implementations.
+// The service layer depends on the interface — never the concrete type.
 package repository
 
 import (
@@ -21,17 +23,18 @@ type UserRepository interface {
 	ValidateCredentials(ctx context.Context, email, password string) (string /* userID */, error)
 }
 
+// MongoUserRepository is the MongoDB implementation of UserRepository.
 type MongoUserRepository struct {
-	// coll is the MongoDB collection for users.
 	coll *mongo.Collection
 }
 
-// NewMongoUserRepository creates a new MongoUserRepository with the given MongoDB database.
+// NewMongoUserRepository wires the repository to the "users" collection.
 func NewMongoUserRepository(db *mongo.Database) *MongoUserRepository {
 	return &MongoUserRepository{coll: db.Collection("users")}
 }
 
-// EnsureIndexes creates necessary indexes for the users collection, such as a unique index on email.
+// EnsureIndexes creates a unique index on email at startup.
+// Safe to call on every startup — MongoDB is idempotent on existing indexes.
 func (repo *MongoUserRepository) EnsureIndexes(ctx context.Context) error {
 	models := []mongo.IndexModel{
 		{Keys: bson.D{{Key: "email", Value: 1}}, Options: options.Index().SetUnique(true)},
@@ -40,9 +43,8 @@ func (repo *MongoUserRepository) EnsureIndexes(ctx context.Context) error {
 	return err
 }
 
-// Create saves a new user to the database. It returns an error if the operation fails (e.g., due to duplicate email).
+// Create inserts a new user document and writes the generated ObjectID back onto the struct.
 func (repo *MongoUserRepository) Create(ctx context.Context, user *domain.User) error {
-
 	res, err := repo.coll.InsertOne(ctx, user)
 	if err != nil {
 		return err
@@ -53,26 +55,32 @@ func (repo *MongoUserRepository) Create(ctx context.Context, user *domain.User) 
 	return nil
 }
 
-// FindByEmail retrieves a user by their email address. It returns the user or an error if not found.
+// FindByEmail retrieves a user by email.
+// Returns nil, nil when the user does not exist — callers must check for nil
+// to distinguish "not found" from a real database error.
 func (repo *MongoUserRepository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
 	var user domain.User
 	err := repo.coll.FindOne(ctx, bson.M{"email": email}).Decode(&user)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return nil, nil // not found — not an error
+	}
 	if err != nil {
-		return nil, err
+		return nil, err // real DB error
 	}
 	return &user, nil
 }
 
-// ValidateCredentials checks if the provided email and password match a user in the database.
-// It returns the user ID if valid, or an error if invalid.
+// ValidateCredentials looks up the user by email and verifies the password hash.
+// Returns the hex user ID on success.
 func (repo *MongoUserRepository) ValidateCredentials(ctx context.Context, email, password string) (string, error) {
 	var user domain.User
-
 	err := repo.coll.FindOne(ctx, bson.M{"email": email}).Decode(&user)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return "", errors.New("invalid credentials")
+	}
 	if err != nil {
 		return "", err
 	}
-
 	if !utils.CheckPasswordHash(password, user.PasswordHash) {
 		return "", errors.New("invalid credentials")
 	}

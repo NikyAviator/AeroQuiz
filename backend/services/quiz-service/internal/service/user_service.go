@@ -1,4 +1,6 @@
 // Package service contains the business logic for user management in the quiz-service.
+// It sits between the controllers (HTTP) and the repository (DB).
+// This is where we enforce rules: unique emails, password hashing, admin privileges.
 package service
 
 import (
@@ -10,72 +12,86 @@ import (
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/domain"
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/repository"
 	"github.com/NikyAviator/AeroQuiz/backend/shared/utils"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
+// UserService is the interface the controller depends on.
+// Depending on the interface (not the concrete struct) keeps layers decoupled.
 type UserService interface {
-	CreateUser(ctx context.Context, in domain.LoginRequest) (domain.UserPublic, error)
-	LoginUser(ctx context.Context, loginReq domain.LoginRequest) (string, error)
+	RegisterUser(ctx context.Context, req domain.RegisterRequest) (domain.UserPublic, error)
+	LoginUser(ctx context.Context, req domain.LoginRequest) (string, error)
 }
 
+// userService is the concrete implementation — unexported intentionally.
 type userService struct {
-	userRepo repository.UserRepository
+	repo       repository.UserRepository
+	adminEmail string // email that always receives IsAdmin: true
 }
 
-func NewUserService(r repository.UserRepository) UserService {
-	return &userService{userRepo: r}
+// NewUserService constructs a userService with its dependencies injected.
+func NewUserService(repo repository.UserRepository, adminEmail string) UserService {
+	return &userService{
+		repo:       repo,
+		adminEmail: strings.ToLower(strings.TrimSpace(adminEmail)),
+	}
 }
 
-func (s *userService) CreateUser(ctx context.Context, userLoginReq domain.LoginRequest) (domain.UserPublic, error) {
+// RegisterUser validates the request, checks for duplicate email,
+// hashes the password, and persists the new user.
+func (s *userService) RegisterUser(ctx context.Context, req domain.RegisterRequest) (domain.UserPublic, error) {
+	email := strings.ToLower(strings.TrimSpace(req.Email))
 
-	if strings.TrimSpace(userLoginReq.Email) == "" || strings.TrimSpace(userLoginReq.Password) == "" {
-		return domain.UserPublic{}, errors.New("missing required fields")
+	// 1. Check for duplicate email
+	existing, err := s.repo.FindByEmail(ctx, email)
+	if err != nil {
+		return domain.UserPublic{}, err
+	}
+	if existing != nil {
+		return domain.UserPublic{}, errors.New("email already registered")
 	}
 
-	// Hash the password before storing
-	hashedPassword, err := utils.HashPassword(userLoginReq.Password)
+	// 2. Hash the password — never store plaintext
+	hash, err := utils.HashPassword(req.Password)
 	if err != nil {
 		return domain.UserPublic{}, err
 	}
 
-	// Merge input into domain.User
-	newUser := &domain.User{
-		Email:        userLoginReq.Email,
-		PasswordHash: hashedPassword,
-		CreatedAt:    time.Now(),
-		UpdatedAt:    time.Now(),
+	// 3. Build the user document
+	now := time.Now().UTC()
+	user := &domain.User{
+		ID:           bson.NewObjectID(),
+		Email:        email,
+		UserName:     strings.TrimSpace(req.UserName),
+		PasswordHash: hash,
+		IsAdmin:      email == s.adminEmail,
+		CreatedAt:    now,
+		UpdatedAt:    now,
 	}
 
-	// Create user in the repository
-	err = s.userRepo.Create(ctx, newUser)
-	if err != nil {
+	// 4. Persist
+	if err := s.repo.Create(ctx, user); err != nil {
 		return domain.UserPublic{}, err
 	}
 
-	// Prepare public user data to return
-	userPublic := domain.UserPublic{
-		ID:        newUser.ID,
-		Email:     newUser.Email,
-		CreatedAt: newUser.CreatedAt,
-	}
-
-	return userPublic, nil
-
+	return domain.UserPublic{
+		ID:        user.ID,
+		Email:     user.Email,
+		UserName:  user.UserName,
+		IsAdmin:   user.IsAdmin,
+		CreatedAt: user.CreatedAt,
+	}, nil
 }
 
-func (s *userService) LoginUser(ctx context.Context, loginReq domain.LoginRequest) (string, error) {
-	if strings.TrimSpace(loginReq.Email) == "" || strings.TrimSpace(loginReq.Password) == "" {
-		return "", errors.New("email and password are required")
-	}
+// LoginUser verifies credentials and returns a signed JWT on success.
+func (s *userService) LoginUser(ctx context.Context, req domain.LoginRequest) (string, error) {
+	email := strings.ToLower(strings.TrimSpace(req.Email))
 
-	// Validate credentials -> returns the DB user ID
-	userID, err := s.userRepo.ValidateCredentials(ctx, loginReq.Email, loginReq.Password)
+	userID, err := s.repo.ValidateCredentials(ctx, email, req.Password)
 	if err != nil {
 		return "", errors.New("invalid email or password")
 	}
 
-	// Issue JWT token
-	// Keep email from the request for now; if you later want canonical case, return email from repo too.
-	token, err := utils.GenerateToken(loginReq.Email, userID)
+	token, err := utils.GenerateToken(email, userID)
 	if err != nil {
 		return "", err
 	}
