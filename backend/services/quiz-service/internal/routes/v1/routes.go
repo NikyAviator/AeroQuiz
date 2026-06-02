@@ -26,4 +26,5 @@ func Regsiter(
 
 	// Public routes
 	api.POST("/login", controllers.LoginController(userSvc))
+	api.POST("/register", controllers.CreateUserController(userSvc))
 }
