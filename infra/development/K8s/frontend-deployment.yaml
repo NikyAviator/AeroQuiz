@@ -21,12 +21,12 @@ spec:
           ports:
             - containerPort: 8080
           # CRITICAL: Expose API_SHARED_SECRET for nginx envsubst
-          # env:
-          #   - name: API_SHARED_SECRET
-          #     valueFrom:
-          #       secretKeyRef:
-          #         name: blog-service-env
-          #         key: API_SHARED_SECRET
+          env:
+            - name: API_SHARED_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: quiz-service-env
+                  key: API_SHARED_SECRET
           readinessProbe:
             httpGet:
               path: /
