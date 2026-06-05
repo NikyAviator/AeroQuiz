@@ -23,7 +23,7 @@ type User struct {
 type RegisterRequest struct {
 	Email    string `json:"email"    binding:"required,email"`
 	UserName string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required,min=8"`
+	Password string `json:"password" binding:"required,min=8,max=25"`
 }
 
 // LoginRequest is the payload the client sends to POST /api/v1/auth/login
