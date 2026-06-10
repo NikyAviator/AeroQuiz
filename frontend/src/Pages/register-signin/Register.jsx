@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
 
 // ── Password strength logic ──────────────────────────────────────────────────
 function getStrength(password) {
@@ -18,7 +19,6 @@ function getStrength(password) {
 }
 
 // ── Email validation ─────────────────────────────────────────────────────────
-// Checks that the email looks like: something@something.something
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -26,6 +26,8 @@ function isValidEmail(email) {
 const MAX_PASSWORD_LENGTH = 25;
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -33,17 +35,16 @@ export default function Register() {
     confirmPassword: '',
   });
 
-  // Track whether each password field is visible
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   // ── Derived validation state ─────────────────────────────────────────────
   const emailTouched = form.email.length > 0;
   const emailValid = isValidEmail(form.email);
   const emailInvalid = emailTouched && !emailValid;
-
   const strength = getStrength(form.password);
   const passwordsMatch =
     form.confirmPassword.length > 0 && form.password === form.confirmPassword;
@@ -55,22 +56,58 @@ export default function Register() {
     emailValid &&
     form.password.length >= 8 &&
     form.password.length <= MAX_PASSWORD_LENGTH &&
-    passwordsMatch;
+    passwordsMatch &&
+    !loading;
 
   function handleChange(e) {
     setError('');
+    setSuccess('');
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (!canSubmit) return;
-    // TODO: wire to backend POST /api/v1/auth/register
-    console.log('Submitting:', {
-      username: form.username,
-      email: form.email,
-      password: form.password,
-    });
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const res = await fetch('/api/v1/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: form.username.trim(),
+          email: form.email.trim().toLowerCase(),
+          password: form.password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.status === 201) {
+        // Registration successful — show message then redirect to sign in
+        setSuccess(
+          `Account created! Welcome, ${data.username}. Redirecting to sign in…`,
+        );
+        setTimeout(() => navigate('/signin'), 2000);
+        return;
+      }
+
+      if (res.status === 409) {
+        setError('That email is already registered. Try signing in instead.');
+        return;
+      }
+
+      // Any other error from backend
+      setError(data.error ?? 'Something went wrong. Please try again.');
+    } catch {
+      // Network error — fetch itself failed
+      setError('Could not reach the server. Please check your connection.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -161,7 +198,6 @@ export default function Register() {
                   onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3 py-1.5 pr-10 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500 sm:text-sm/6"
                 />
-                {/* Eye toggle */}
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
@@ -176,7 +212,6 @@ export default function Register() {
                 </button>
               </div>
 
-              {/* Strength bar + counter */}
               {form.password.length > 0 && (
                 <div className="mt-2 space-y-1">
                   <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-white/10">
@@ -235,7 +270,6 @@ export default function Register() {
                         : 'outline-gray-300 focus:outline-indigo-600 dark:outline-white/10 dark:focus:outline-indigo-500'
                   }`}
                 />
-                {/* Eye toggle */}
                 <button
                   type="button"
                   onClick={() => setShowConfirm((v) => !v)}
@@ -259,9 +293,12 @@ export default function Register() {
               )}
             </div>
 
-            {/* ── Global error ── */}
+            {/* ── Feedback messages ── */}
             {error && (
               <p className="text-center text-sm text-red-500">{error}</p>
+            )}
+            {success && (
+              <p className="text-center text-sm text-green-500">{success}</p>
             )}
 
             {/* ── Submit ── */}
@@ -271,7 +308,32 @@ export default function Register() {
                 disabled={!canSubmit}
                 className="shadow-xs flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400"
               >
-                Create account
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <svg
+                      className="h-4 w-4 animate-spin"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
+                      />
+                    </svg>
+                    Creating account…
+                  </span>
+                ) : (
+                  'Create account'
+                )}
               </button>
             </div>
           </form>
