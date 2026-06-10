@@ -10,6 +10,8 @@ A fullstack aviation quiz application written in JavaScript and Go.
 - [DevOps](#devops)
 - [API Testing](#api-testing)
 
+### My Tech Stack
+
 **Front end:**
 
 - React
@@ -48,7 +50,7 @@ npm install -D @eslint/js @types/react @types/react-dom @vitejs/plugin-react esl
 
 For development environment we use a Tiltfile and Minikube for hosting of our K8s.
 
-To start our cluster, make sure you meet the following prerequisites:
+To start our cluster, make sure you meet the following prerequisites.
 
 ### Prerequisites:
 
@@ -61,52 +63,48 @@ To start our cluster, make sure you meet the following prerequisites:
 
 ---
 
-Before starting stuff, check current docker context & other nice commands:
+Before starting, check current docker context & other nice commands:
 
 ```bash
-docker context ls # To check
-docker context use default # To switch (I prefer native dockerd (/run/docker.sock))
-docker info # check the stuff you running
+docker context ls                  # check active context
+docker context use default         # switch to native dockerd (/run/docker.sock)
+docker info                        # inspect what is running
 ```
 
-I recommend setting the following resources in your minikube VM:
+Recommended minikube resource config:
 
 ```bash
 minikube config set driver docker
 minikube config set cpus 2
 minikube config set memory 4096
 minikube config set disk-size 20g
-minikube config view # To check the set resources
+minikube config view               # verify
 minikube start
 ```
 
-Then enable ingress addons in minikube:
+Then enable the ingress addon:
 
 ```bash
 minikube addons enable ingress
 ```
 
-We need to have the env file created so that we can run the program:
-
-To create a **Secret** (dev only, and path added to .gitignore):
-
-(https://kubernetes.io/docs/tasks/configmap-secret/managing-secret-using-kubectl/)
+Create the Kubernetes secret from the env file (dev only, path is in .gitignore):
 
 ```bash
 kubectl create secret generic quiz-service-env \
   --from-env-file=secrets/quiz-service.env
 ```
 
-To update later, just delete and create it again:
+To update later, delete and recreate:
 
 ```bash
 kubectl delete secret quiz-service-env
 ```
 
-To check that it is created from correct file & Security Header check
+Verify the secret and check headers:
 
 ```bash
-kubectl get secret quiz-service-env -o
+kubectl get secret quiz-service-env -o json
 kubectl exec -it <backend-pod-name> -- env | grep API_SHARED_SECRET
 ```
 
@@ -114,59 +112,69 @@ kubectl exec -it <backend-pod-name> -- env | grep API_SHARED_SECRET
 
 ### Scripts
 
-To get a clear snapshot of any project you are working on, use:
+Get a clear snapshot of the project structure:
 
 ```bash
 tree -I 'node_modules|.git|dist' -a -L 10
 ```
 
-To update **ALL** dependencies in the project, cd inte **/scripts** folder and run:
+Update **ALL** dependencies — cd into **/scripts** and run:
 
 ```bash
 ./update-all.sh
 ```
 
+---
+
 ## DevOps
 
-### Handy DevOps commands for local dev:
+### Local dev ports (managed automatically by Tilt)
 
-From the **repo root**, simply run (and do not forget to have your minikube instance running):
+| URL                     | What it hits                           |
+| ----------------------- | -------------------------------------- |
+| `http://localhost:8080` | Full stack — ingress → nginx → backend |
+| `http://localhost:3000` | Frontend pod directly                  |
+| `http://localhost:5000` | Backend pod directly                   |
+
+No manual port-forwarding needed. Tilt manages all three.
+
+### Starting the cluster
+
+From the **repo root**, with minikube running:
 
 ```bash
 tilt up
 ```
 
-### Stopping / Cleaning Up
-
-When you’re done and other minikube commands:
+### Stopping / Cleaning up
 
 ```bash
-tilt down      # stops all Tilt resources
-minikube stop  # shuts down the cluster (keeps data)
----
-minikube config view # resources
+tilt down       # stop all Tilt resources
+minikube stop   # shut down the cluster (keeps data)
+```
+
+Other useful minikube commands:
+
+```bash
+minikube config view
 minikube status
 minikube profile list
 minikube --help
 ```
 
-or to nuke everything, use:
+To nuke everything completely:
 
 ```bash
-minikube delete --all --purge   # removes the cluster completely
+minikube delete --all --purge
 ```
 
-but only when:
+Use this only when:
 
-- Changed driver / core config (e.g. switched from Docker Desktop to native Docker)
+- Switching driver or core config
+- Changing CPU/memory/disk size
+- The cluster is completely broken and not worth debugging
 
-- Changed CPU/memory/disk size in a way that requires fresh node
-
-- The cluster is completely borked and not worth debugging
-
-###
-
-To recreate stale pods:
+Recreate stale pods:
 
 ```bash
 tilt down
