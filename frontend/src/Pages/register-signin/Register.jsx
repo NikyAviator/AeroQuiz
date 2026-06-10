@@ -1,23 +1,26 @@
 import { useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
-// Password strength logic
-// Password strength — getStrength() scores the password on 5 criteria: length ≥8, length ≥12, has uppercase, has number, has special character.
-// Scores map to Weak/Medium/Strong with a animated progress bar in red/yellow/green.
+// ── Password strength logic ──────────────────────────────────────────────────
 function getStrength(password) {
   if (password.length === 0) return null;
-
   let score = 0;
   if (password.length >= 8) score++;
   if (password.length >= 12) score++;
-  if (/[A-Z]/.test(password)) score++; // uppercase letter
-  if (/[0-9]/.test(password)) score++; // number
-  if (/[^A-Za-z0-9]/.test(password)) score++; // special character
-
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
   if (score <= 2) return { label: 'Weak', color: 'bg-red-500', width: 'w-1/3' };
   if (score <= 3)
     return { label: 'Medium', color: 'bg-yellow-400', width: 'w-2/3' };
   return { label: 'Strong', color: 'bg-green-500', width: 'w-full' };
+}
+
+// ── Email validation ─────────────────────────────────────────────────────────
+// Checks that the email looks like: something@something.something
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 const MAX_PASSWORD_LENGTH = 25;
@@ -30,7 +33,16 @@ export default function Register() {
     confirmPassword: '',
   });
 
+  // Track whether each password field is visible
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const [error, setError] = useState('');
+
+  // ── Derived validation state ─────────────────────────────────────────────
+  const emailTouched = form.email.length > 0;
+  const emailValid = isValidEmail(form.email);
+  const emailInvalid = emailTouched && !emailValid;
 
   const strength = getStrength(form.password);
   const passwordsMatch =
@@ -40,7 +52,7 @@ export default function Register() {
 
   const canSubmit =
     form.username.trim() !== '' &&
-    form.email.trim() !== '' &&
+    emailValid &&
     form.password.length >= 8 &&
     form.password.length <= MAX_PASSWORD_LENGTH &&
     passwordsMatch;
@@ -53,12 +65,6 @@ export default function Register() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!canSubmit) return;
-
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-
     // TODO: wire to backend POST /api/v1/auth/register
     console.log('Submitting:', {
       username: form.username,
@@ -119,9 +125,20 @@ export default function Register() {
                   autoComplete="email"
                   value={form.email}
                   onChange={handleChange}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500 sm:text-sm/6"
+                  className={`block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 sm:text-sm/6 ${
+                    emailInvalid
+                      ? 'outline-red-400 focus:outline-red-500 dark:outline-red-400'
+                      : emailTouched && emailValid
+                        ? 'outline-green-400 focus:outline-green-500 dark:outline-green-400'
+                        : 'outline-gray-300 focus:outline-indigo-600 dark:outline-white/10 dark:focus:outline-indigo-500'
+                  }`}
                 />
               </div>
+              {emailInvalid && (
+                <p className="mt-1 text-xs text-red-500">
+                  Please enter a valid email address.
+                </p>
+              )}
             </div>
 
             {/* ── Password ── */}
@@ -132,21 +149,34 @@ export default function Register() {
               >
                 Password
               </label>
-              <div className="mt-2">
+              <div className="relative mt-2">
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   autoComplete="new-password"
                   maxLength={MAX_PASSWORD_LENGTH}
                   value={form.password}
                   onChange={handleChange}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500 sm:text-sm/6"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 pr-10 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500 sm:text-sm/6"
                 />
+                {/* Eye toggle */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  {showPassword ? (
+                    <EyeSlashIcon className="h-5 w-5" />
+                  ) : (
+                    <EyeIcon className="h-5 w-5" />
+                  )}
+                </button>
               </div>
 
-              {/* Character counter + strength bar */}
+              {/* Strength bar + counter */}
               {form.password.length > 0 && (
                 <div className="mt-2 space-y-1">
                   <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-white/10">
@@ -187,17 +217,17 @@ export default function Register() {
               >
                 Confirm password
               </label>
-              <div className="mt-2">
+              <div className="relative mt-2">
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="password"
+                  type={showConfirm ? 'text' : 'password'}
                   required
                   autoComplete="new-password"
                   maxLength={MAX_PASSWORD_LENGTH}
                   value={form.confirmPassword}
                   onChange={handleChange}
-                  className={`block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 sm:text-sm/6 ${
+                  className={`block w-full rounded-md bg-white px-3 py-1.5 pr-10 text-base text-gray-900 outline-1 -outline-offset-1 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 sm:text-sm/6 ${
                     passwordsMismatch
                       ? 'outline-red-400 focus:outline-red-500 dark:outline-red-400'
                       : passwordsMatch
@@ -205,6 +235,19 @@ export default function Register() {
                         : 'outline-gray-300 focus:outline-indigo-600 dark:outline-white/10 dark:focus:outline-indigo-500'
                   }`}
                 />
+                {/* Eye toggle */}
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm((v) => !v)}
+                  aria-label={showConfirm ? 'Hide password' : 'Show password'}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  {showConfirm ? (
+                    <EyeSlashIcon className="h-5 w-5" />
+                  ) : (
+                    <EyeIcon className="h-5 w-5" />
+                  )}
+                </button>
               </div>
               {passwordsMismatch && (
                 <p className="mt-1 text-xs text-red-500">
