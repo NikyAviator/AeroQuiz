@@ -182,4 +182,105 @@ tilt logs -f
 
 ## API Testing
 
-The base URL for all API calls is: `/api/v1`
+The base URL for all API calls is `/api/v1`.
+
+Tilt automatically forwards all ports on `tilt up` — no manual setup needed:
+
+| URL                     | Use for                                        |
+| ----------------------- | ---------------------------------------------- |
+| `http://localhost:5000` | Backend direct — fastest for API testing       |
+| `http://localhost:8080` | Full stack — tests nginx proxy and headers too |
+
+> Use `localhost:5000` to test the backend in isolation. Use `localhost:8080` to verify the full request flow including the nginx `X-API-SECRET` header injection.
+
+---
+
+### Register a new user
+
+```
+POST /api/v1/auth/register
+Content-Type: application/json
+```
+
+**Request body:**
+
+```json
+{
+  "username": "CaptainNiky",
+  "email": "niky@example.com",
+  "password": "MyPassword123!"
+}
+```
+
+**Responses:**
+
+| Status                      | Meaning                                                                |
+| --------------------------- | ---------------------------------------------------------------------- |
+| `201 Created`               | User registered. Returns public user object.                           |
+| `400 Bad Request`           | Validation failed — missing fields, password too short, invalid email. |
+| `409 Conflict`              | Email already registered.                                              |
+| `500 Internal Server Error` | Server-side error.                                                     |
+
+**Success response (`201`):**
+
+```json
+{
+  "id": "6650a1f2c3d4e5f6a7b8c9d0",
+  "email": "niky@example.com",
+  "username": "CaptainNiky",
+  "isAdmin": false,
+  "createdAt": "2026-06-10T14:00:00Z"
+}
+```
+
+**curl:**
+
+```bash
+curl -X POST http://localhost:5000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"CaptainNiky","email":"niky@example.com","password":"MyPassword123!"}'
+```
+
+---
+
+### Login
+
+```
+POST /api/v1/auth/login
+Content-Type: application/json
+```
+
+**Request body:**
+
+```json
+{
+  "email": "niky@example.com",
+  "password": "MyPassword123!"
+}
+```
+
+**Responses:**
+
+| Status             | Meaning                              |
+| ------------------ | ------------------------------------ |
+| `200 OK`           | Login successful. Returns JWT token. |
+| `400 Bad Request`  | Validation failed.                   |
+| `401 Unauthorized` | Invalid email or password.           |
+
+**Success response (`200`):**
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+> Store the JWT token client-side and send it as `Authorization: Bearer <token>` on all protected routes.
+
+**curl:**
+
+```bash
+curl -X POST http://localhost:5000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"niky@example.com","password":"MyPassword123!"}'
+```
