@@ -8,6 +8,7 @@ A fullstack aviation quiz application written in JavaScript and Go.
 - [Running in Development](#running-in-development)
 - [Scripts](#scripts)
 - [DevOps](#devops)
+- [API Testing](#api-testing)
 
 **Front end:**
 
@@ -176,3 +177,9 @@ tilt up
 ---
 tilt logs -f
 ```
+
+---
+
+## API Testing
+
+The base URL for all API calls is: `/api/v1`

@@ -20,14 +20,13 @@ k8s_yaml([
     'infra/development/K8s/backend-deployment.yaml',
     'infra/development/K8s/backend-service.yaml',
     'infra/development/K8s/ingress.yaml',
-
 ])
 
 # --- Tilt UX ---
-k8s_resource('frontend', port_forwards=[])
-k8s_resource('backend', port_forwards=[])
+k8s_resource('frontend', port_forwards=['3000:8080'])  # frontend direct on localhost:3000
+k8s_resource('backend',  port_forwards=['5000:5000'])  # backend direct on localhost:5000
 
-# Run ingress port-forward as a background process owned by Tilt
+# Ingress owns 8080 — full stack testing goes through here
 local_resource(
   'ingress-pf',
   serve_cmd='kubectl -n ingress-nginx port-forward svc/ingress-nginx-controller 8080:80',
