@@ -22,6 +22,9 @@ type UserService interface {
 	// LoginUser returns the signed JWT token AND the public user — the controller
 	// sets the token as a cookie and returns the user info in the response body.
 	LoginUser(ctx context.Context, req domain.LoginRequest) (token string, user domain.UserPublic, err error)
+	// GetMe fetches the public user from DB using the userId stashed in the
+	// JWT claims by the Authn middleware. Powers GET /api/v1/me.
+	GetMe(ctx context.Context, userID string) (domain.UserPublic, error)
 }
 
 // userService is the concrete implementation — unexported intentionally.
@@ -102,6 +105,33 @@ func (s *userService) LoginUser(ctx context.Context, req domain.LoginRequest) (s
 	}
 
 	return token, domain.UserPublic{
+		ID:        user.ID,
+		Email:     user.Email,
+		UserName:  user.UserName,
+		IsAdmin:   user.IsAdmin,
+		CreatedAt: user.CreatedAt,
+	}, nil
+}
+
+// GetMe converts the raw userId string from the JWT claims into a bson.ObjectID,
+// fetches the user from the DB, and returns UserPublic.
+// The Authn middleware already verified the JWT before this is called.
+func (s *userService) GetMe(ctx context.Context, userID string) (domain.UserPublic, error) {
+	// Convert the hex string from the JWT claim to a bson.ObjectID
+	oid, err := bson.ObjectIDFromHex(userID)
+	if err != nil {
+		return domain.UserPublic{}, errors.New("invalid user id")
+	}
+
+	user, err := s.repo.FindByID(ctx, oid)
+	if err != nil {
+		return domain.UserPublic{}, err
+	}
+	if user == nil {
+		return domain.UserPublic{}, errors.New("user not found")
+	}
+
+	return domain.UserPublic{
 		ID:        user.ID,
 		Email:     user.Email,
 		UserName:  user.UserName,

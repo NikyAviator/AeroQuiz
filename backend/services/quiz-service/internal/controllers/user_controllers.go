@@ -102,3 +102,30 @@ func LogoutController() gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"message": "logged out successfully"})
 	}
 }
+
+// MeController handles GET /api/v1/me.
+// The Authn middleware has already verified the JWT cookie and stashed
+// the userId on the Gin context — this handler just fetches the user from DB.
+// The frontend calls this on every app startup to restore the logged-in state
+// after a page refresh, without ever reading the cookie directly.
+func MeController(svc service.UserService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// userId was stashed away by the Authn middleware after verifying the JWT.
+		userID := c.GetString("userId")
+		if userID == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "not authenticated"})
+			return
+		}
+
+		ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+		defer cancel()
+
+		user, err := svc.GetMe(ctx, userID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "could not fetch user"})
+			return
+		}
+
+		c.JSON(http.StatusOK, user)
+	}
+}

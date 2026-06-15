@@ -21,6 +21,7 @@ type UserRepository interface {
 	Create(ctx context.Context, user *domain.User) error
 	FindByEmail(ctx context.Context, email string) (*domain.User, error)
 	ValidateCredentials(ctx context.Context, email, password string) (*domain.User, error)
+	FindByID(ctx context.Context, id bson.ObjectID) (*domain.User, error)
 }
 
 // MongoUserRepository is the MongoDB implementation of UserRepository.
@@ -66,6 +67,21 @@ func (repo *MongoUserRepository) FindByEmail(ctx context.Context, email string) 
 	}
 	if err != nil {
 		return nil, err // real DB error
+	}
+	return &user, nil
+}
+
+// FindByID retrieves a user by their ObjectID.
+// Used by the /me endpoint to fetch the full user after reading the userId claim from the JWT.
+// Returns nil, nil when the user does not exist.
+func (repo *MongoUserRepository) FindByID(ctx context.Context, id bson.ObjectID) (*domain.User, error) {
+	var user domain.User
+	err := repo.coll.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return nil, nil // not found — not an error
+	}
+	if err != nil {
+		return nil, err
 	}
 	return &user, nil
 }
