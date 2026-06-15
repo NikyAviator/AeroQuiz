@@ -70,6 +70,7 @@ func NewAuth(userSvc service.UserService, adminEmail string, apiSharedSecret str
 
 	// 3) Timeout — wraps the request in a deadline so slow DB calls don't
 	// hold a goroutine open forever.
+	// NOT CALLED YET -- apply to routes that do DB calls or other potentially slow operations.
 	timeout := func(d time.Duration) gin.HandlerFunc {
 		return func(c *gin.Context) {
 			ctx, cancel := context.WithTimeout(c.Request.Context(), d)
