@@ -42,7 +42,11 @@ func RegisterController(svc service.UserService) gin.HandlerFunc {
 	}
 }
 
-// LoginController handles POST /api/v1/auth/login
+// LoginController handles POST /api/v1/auth/login.
+// On success it sets an httpOnly cookie containing the JWT — JavaScript
+// cannot read this cookie, protecting against XSS token theft.
+// The public user info is returned in the response body so the frontend
+// can display the username without ever touching the token.
 func LoginController(svc service.UserService, cookieSecure bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req domain.LoginRequest
@@ -61,9 +65,9 @@ func LoginController(svc service.UserService, cookieSecure bool) gin.HandlerFunc
 		}
 
 		// Set the JWT as an httpOnly cookie.
-		// SameSite=Strict: cookie is only sent on same-site requests (no CSRF risk).
+		// SameSite=Strict: cookie only sent on same-site requests — no CSRF risk.
 		// Secure=true in production (HTTPS), false in dev (HTTP).
-		// HttpOnly=true: JS cannot read this cookie (XSS protection).
+		// HttpOnly=true: JS cannot read this cookie — XSS protection.
 		http.SetCookie(c.Writer, &http.Cookie{
 			Name:     cookieName,
 			Value:    token,
@@ -77,5 +81,24 @@ func LoginController(svc service.UserService, cookieSecure bool) gin.HandlerFunc
 		// Return user info in the body — frontend uses this for the greeting.
 		// The token itself stays in the cookie and is never exposed to JS.
 		c.JSON(http.StatusOK, user)
+	}
+}
+
+// LogoutController handles POST /api/v1/auth/logout.
+// Clears the auth cookie by setting MaxAge to -1, which instructs the
+// browser to delete it immediately. No JWT validation needed —
+// clearing an already-absent cookie is harmless.
+func LogoutController() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:     cookieName,
+			Value:    "",
+			MaxAge:   -1, // browser deletes the cookie immediately
+			Path:     "/",
+			HttpOnly: true,
+			Secure:   false, // doesn't matter for deletion
+			SameSite: http.SameSiteStrictMode,
+		})
+		c.JSON(http.StatusOK, gin.H{"message": "logged out successfully"})
 	}
 }

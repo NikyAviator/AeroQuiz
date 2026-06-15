@@ -25,21 +25,24 @@ func Register(r *gin.Engine, userSvc service.UserService, opts Options) {
 	{
 		auth.POST("/register", controllers.RegisterController(userSvc))
 		auth.POST("/login", controllers.LoginController(userSvc, opts.CookieSecure))
+		// Logout clears the httpOnly cookie — no JWT check needed,
+		// clearing an already-absent cookie is harmless.
+		auth.POST("/logout", controllers.LogoutController())
 	}
 
-	// Protected routes — JWT required
+	// Protected routes — valid httpOnly JWT cookie required
 	protected := api.Group("/")
 	protected.Use(opts.MW.Authn)
 	{
-		// Future endpoints go here e.g.:
+		// Future endpoints:
 		// protected.GET("/me", controllers.MeController(userSvc))
 		// protected.GET("/quiz", controllers.ListQuizzesController(quizSvc))
 	}
 
-	// Admin routes — JWT + admin check required
+	// Admin routes — valid JWT + admin email required
 	admin := api.Group("/admin")
 	admin.Use(opts.MW.Authn, opts.MW.AdminOnly)
 	{
-		// Future admin endpoints go here
+		// Future admin endpoints
 	}
 }
