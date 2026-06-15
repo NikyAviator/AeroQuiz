@@ -30,6 +30,9 @@ func main() {
 	port := env.GetString("PORT", "5000")
 	adminEmail := env.GetString("ADMIN_EMAIL", "")
 	apiSharedSecret := env.GetString("API_SHARED_SECRET", "")
+	// COOKIE_SECURE: false in dev (HTTP), true in production (HTTPS).
+	// Set to true in your production env file / K8s secret.
+	cookieSecure := env.GetBool("COOKIE_SECURE", false)
 
 	// 2. Connect to MongoDB
 	_, db, closeMongo, err := sharedmongo.ConnectMongoDB(context.Background(), sharedmongo.MongoConfig{
@@ -63,7 +66,8 @@ func main() {
 	v1.Register(router, userSvc, v1.Options{
 		MW:              mws,
 		AdminEmail:      adminEmail,
-		ApiSharedSecret: apiSharedSecret,
+		ApiSharedSecret: apiSharedSecret, // This is to make sure the request is coming from the frontend.
+		CookieSecure:    cookieSecure,
 	})
 
 	// 6. Start HTTP server in its own goroutine.

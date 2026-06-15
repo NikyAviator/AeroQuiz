@@ -20,7 +20,7 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *domain.User) error
 	FindByEmail(ctx context.Context, email string) (*domain.User, error)
-	ValidateCredentials(ctx context.Context, email, password string) (string /* userID */, error)
+	ValidateCredentials(ctx context.Context, email, password string) (*domain.User, error)
 }
 
 // MongoUserRepository is the MongoDB implementation of UserRepository.
@@ -70,19 +70,20 @@ func (repo *MongoUserRepository) FindByEmail(ctx context.Context, email string) 
 	return &user, nil
 }
 
-// ValidateCredentials looks up the user by email and verifies the password hash.
-// Returns the hex user ID on success.
-func (repo *MongoUserRepository) ValidateCredentials(ctx context.Context, email, password string) (string, error) {
+// ValidateCredentials looks up the user by email, verifies the password hash,
+// and returns the full User document on success — the service uses this to
+// build the JWT claims and the public user response in one step.
+func (repo *MongoUserRepository) ValidateCredentials(ctx context.Context, email, password string) (*domain.User, error) {
 	var user domain.User
 	err := repo.coll.FindOne(ctx, bson.M{"email": email}).Decode(&user)
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		return "", errors.New("invalid credentials")
+		return nil, errors.New("invalid credentials")
 	}
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if !utils.CheckPasswordHash(password, user.PasswordHash) {
-		return "", errors.New("invalid credentials")
+		return nil, errors.New("invalid credentials")
 	}
-	return user.ID.Hex(), nil
+	return &user, nil
 }

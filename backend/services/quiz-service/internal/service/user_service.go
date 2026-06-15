@@ -19,7 +19,9 @@ import (
 // Depending on the interface (not the concrete struct) keeps layers decoupled.
 type UserService interface {
 	RegisterUser(ctx context.Context, req domain.RegisterRequest) (domain.UserPublic, error)
-	LoginUser(ctx context.Context, req domain.LoginRequest) (string, error)
+	// LoginUser returns the signed JWT token AND the public user — the controller
+	// sets the token as a cookie and returns the user info in the response body.
+	LoginUser(ctx context.Context, req domain.LoginRequest) (token string, user domain.UserPublic, err error)
 }
 
 // userService is the concrete implementation — unexported intentionally.
@@ -82,18 +84,28 @@ func (s *userService) RegisterUser(ctx context.Context, req domain.RegisterReque
 	}, nil
 }
 
-// LoginUser verifies credentials and returns a signed JWT on success.
-func (s *userService) LoginUser(ctx context.Context, req domain.LoginRequest) (string, error) {
+// LoginUser verifies credentials, issues a signed JWT, and returns both
+// the token (for the controller to set as a cookie) and the public user
+// info (for the controller to return in the response body).
+func (s *userService) LoginUser(ctx context.Context, req domain.LoginRequest) (string, domain.UserPublic, error) {
 	email := strings.ToLower(strings.TrimSpace(req.Email))
 
-	userID, err := s.repo.ValidateCredentials(ctx, email, req.Password)
+	// ValidateCredentials now returns the full user so we can build UserPublic
+	user, err := s.repo.ValidateCredentials(ctx, email, req.Password)
 	if err != nil {
-		return "", errors.New("invalid email or password")
+		return "", domain.UserPublic{}, errors.New("invalid email or password")
 	}
 
-	token, err := utils.GenerateToken(email, userID)
+	token, err := utils.GenerateToken(user.Email, user.ID.Hex())
 	if err != nil {
-		return "", err
+		return "", domain.UserPublic{}, err
 	}
-	return token, nil
+
+	return token, domain.UserPublic{
+		ID:        user.ID,
+		Email:     user.Email,
+		UserName:  user.UserName,
+		IsAdmin:   user.IsAdmin,
+		CreatedAt: user.CreatedAt,
+	}, nil
 }

@@ -13,6 +13,7 @@ type Options struct {
 	MW              middleware.Auth
 	AdminEmail      string
 	ApiSharedSecret string
+	CookieSecure    bool // false in dev (HTTP), true in prod (HTTPS). Set via env var.
 }
 
 // Register wires all v1 routes onto the engine.
@@ -23,7 +24,7 @@ func Register(r *gin.Engine, userSvc service.UserService, opts Options) {
 	auth := api.Group("/auth")
 	{
 		auth.POST("/register", controllers.RegisterController(userSvc))
-		auth.POST("/login", controllers.LoginController(userSvc))
+		auth.POST("/login", controllers.LoginController(userSvc, opts.CookieSecure))
 	}
 
 	// Protected routes — JWT required
