@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { AuthContext } from '../../Context/AuthProvider';
+import { AuthContext } from '../../Context/AuthContext';
 
 // The consumer hook
 // Any component calls useAuth() to access the context value.
