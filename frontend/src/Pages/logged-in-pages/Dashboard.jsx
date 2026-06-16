@@ -1,16 +1,16 @@
 const products = [
   {
     id: 1,
-    name: 'Basic Tee 8-Pack',
+    name: 'Basic Tee 8-Pack', // Meteorolgy
     href: '#',
-    price: '$256',
+    price: '$256', // Amount of questions in DB
     description:
-      'Get the full lineup of our Basic Tees. Have a fresh shirt all week, and an extra for laundry day.',
-    options: '8 colors',
+      'Get the full lineup of our Basic Tees. Have a fresh shirt all week, and an extra for laundry day.', // Description of the subject
+    options: '8 colors', // Needed? Or maybe how many tests taken?
     imageSrc:
-      'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-01.jpg',
+      'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-01.jpg', // Picture for the subject
     imageAlt:
-      'Eight shirts arranged on table in black, olive, grey, blue, white, red, mustard, and green.',
+      'Eight shirts arranged on table in black, olive, grey, blue, white, red, mustard, and green.', // Alt text for the picture
   },
   {
     id: 2,
@@ -78,6 +78,7 @@ const products = [
 export default function Dashboard() {
   return (
     <div className="bg-white">
+      <h1>Welcome to the Dashboard</h1>
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Products</h2>
 
