@@ -1,6 +1,6 @@
 const products = [
   {
-    id: 1,
+    id: 1, // Subject ID
     name: 'Basic Tee 8-Pack', // Meteorolgy
     href: '#',
     price: '$256', // Amount of questions in DB
@@ -77,16 +77,21 @@ const products = [
 
 export default function Dashboard() {
   return (
-    <div className="bg-white">
-      <h1>Welcome to the Dashboard</h1>
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+    <div className="bg-white dark:bg-gray-900">
+      <h1 className="mt-10 text-center text-2xl font-bold dark:text-white">
+        Welcome to the Dashboard
+      </h1>
+      <h2 className="mt-10 text-center font-bold dark:text-white">
+        ATPL Questions coming soon!
+      </h2>
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Products</h2>
 
         <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-8">
           {products.map((product) => (
             <div
               key={product.id}
-              className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
+              className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white dark:bg-gray-800"
             >
               <img
                 alt={product.imageAlt}
