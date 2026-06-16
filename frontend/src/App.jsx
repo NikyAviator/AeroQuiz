@@ -5,7 +5,7 @@ import Footer from './Components/sections/header-footer-sections/Footer.jsx';
 import ScrollToTopButton from './Components/ui/ScrollToTopButton.jsx';
 import SignIn from './Pages/register-signin/SignIn.jsx';
 import Register from './Pages/register-signin/Register.jsx';
-import LoggedInHomePage from './Pages/logged-in-pages/LoggedInHomePage.jsx';
+import Dashboard from './Pages/logged-in-pages/Dashboard.jsx';
 import './styles.css';
 
 function App() {
@@ -19,8 +19,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/register" element={<Register />} />
-            {/* Protected routes — redirect handled by LoggedInHomePage for now */}
-            <Route path="/dashboard" element={<LoggedInHomePage />} />
+            {/* Protected routes — redirect handled by Dashboard for now */}
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
           <ScrollToTopButton />
         </main>
