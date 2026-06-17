@@ -21,3 +21,13 @@ type Answer struct {
 	Key  string `bson:"key"  json:"key"`  // "A", "B", "C", "D"
 	Text string `bson:"text" json:"text"` // The answer text
 }
+
+// QuestionPublic is sent to the frontend during an active quiz.
+// Correct is intentionally omitted — never expose the answer during a test.
+type QuestionPublic struct {
+	ID       bson.ObjectID `json:"id"`
+	Subject  string        `json:"subject"`
+	Text     string        `json:"text"`
+	ImageURL string        `json:"imageUrl"`
+	Answers  []Answer      `json:"answers"`
+}
