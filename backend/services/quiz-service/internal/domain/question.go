@@ -16,9 +16,8 @@ type Question struct {
 	CreatedAt time.Time     `bson:"createdAt" json:"createdAt"` // When the question was created
 }
 
-// Are these the results we send when the user submits all the answer at the end of the quiz?
-// In that case can we call it: UserAnswers?
+// These are the Question's possible choices and the text for each choice.
 type Answer struct {
 	Key  string `bson:"key"  json:"key"`  // "A", "B", "C", "D"
-	Text string `bson:"text" json:"text"` // optional - The answer text
+	Text string `bson:"text" json:"text"` // The answer text
 }
