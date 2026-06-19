@@ -56,6 +56,14 @@ func main() {
 	if err := userRepo.EnsureIndexes(context.Background()); err != nil {
 		log.Fatalf("ensure user indexes: %v", err)
 	}
+	userResultRepo := repository.NewMongoUserResultRepository(db)
+	if err := userResultRepo.EnsureIndexes(context.Background()); err != nil {
+		log.Fatalf("ensure user result indexes: %v", err)
+	}
+	questionRepo := repository.NewMongoQuestionRepository(db)
+	if err := questionRepo.EnsureIndexes(context.Background()); err != nil {
+		log.Fatalf("ensure question indexes: %v", err)
+	}
 
 	// 4. Wire dependencies: repo → service → middleware → routes
 	userSvc := service.NewUserService(userRepo, adminEmail)
