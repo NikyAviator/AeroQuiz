@@ -4,6 +4,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/domain"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -79,7 +80,7 @@ func (r *MongoUserResultRepository) FindByID(ctx context.Context, id bson.Object
 	err := r.coll.FindOne(ctx, bson.M{"_id": id}).Decode(&result)
 
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, nil
 		}
 		return nil, err
