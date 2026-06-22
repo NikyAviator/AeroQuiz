@@ -16,7 +16,7 @@ import (
 type UserResultRepository interface {
 	Save(ctx context.Context, result *domain.UserResult) error
 	FindByUserID(ctx context.Context, userID bson.ObjectID) ([]domain.UserResult, error)
-	FindURByID(ctx context.Context, id bson.ObjectID) (*domain.UserResult, error)
+	FindByID(ctx context.Context, id bson.ObjectID) (*domain.UserResult, error)
 }
 
 // MongoUserResultRepository is a MongoDB implementation of UserResultRepository.
@@ -54,7 +54,7 @@ func (r *MongoUserResultRepository) Save(ctx context.Context, result *domain.Use
 }
 
 // FindByUserID retrieves all quiz results for a user, newest first.
-// User by the History page to show a user's full test history.
+// Used by the History page to show a user's full test history.
 func (r *MongoUserResultRepository) FindByUserID(ctx context.Context, userID bson.ObjectID) ([]domain.UserResult, error) {
 	opts := options.Find().SetSort(bson.D{{Key: "startedAt", Value: -1}}) // Sort by newest first
 
@@ -71,9 +71,9 @@ func (r *MongoUserResultRepository) FindByUserID(ctx context.Context, userID bso
 	return results, nil
 }
 
-// FindURByID retrieves a single result by its ID.
+// FindByID retrieves a single result by its ID.
 // Used by the result details page to show full answer breakdown.
-func (r *MongoUserResultRepository) FindURByID(ctx context.Context, id bson.ObjectID) (*domain.UserResult, error) {
+func (r *MongoUserResultRepository) FindByID(ctx context.Context, id bson.ObjectID) (*domain.UserResult, error) {
 
 	var result domain.UserResult
 

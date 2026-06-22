@@ -4,6 +4,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/domain"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -15,7 +16,7 @@ type QuestionRepository interface {
 	InsertOne(ctx context.Context, q *domain.Question) error
 	InsertMany(ctx context.Context, qs []domain.Question) error
 	GetRandom(ctx context.Context, subject string, count int) ([]domain.Question, error)
-	FindQByID(ctx context.Context, id bson.ObjectID) (*domain.Question, error)
+	FindByID(ctx context.Context, id bson.ObjectID) (*domain.Question, error)
 }
 
 // MongoQuestionRepository implements QuestionRepository using MongoDB.
@@ -87,14 +88,14 @@ func (repo *MongoQuestionRepository) GetRandom(ctx context.Context, subject stri
 	return questions, nil
 }
 
-// FindQByID retrieves a single question (and its details) by its ObjectID.
-func (repo *MongoQuestionRepository) FindQByID(ctx context.Context, id bson.ObjectID) (*domain.Question, error) {
+// FindByID retrieves a single question (and its details) by its ObjectID.
+func (repo *MongoQuestionRepository) FindByID(ctx context.Context, id bson.ObjectID) (*domain.Question, error) {
 
 	var question domain.Question
 
 	err := repo.coll.FindOne(ctx, bson.M{"_id": id}).Decode(&question)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, nil
 		}
 		return nil, err
