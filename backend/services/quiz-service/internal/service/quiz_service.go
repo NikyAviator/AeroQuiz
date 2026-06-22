@@ -5,6 +5,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/domain"
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/repository"
@@ -51,7 +52,8 @@ func NewQuizService(questionRepo repository.QuestionRepository, resultRepo repos
 //   - set q.CreatedAt
 //   - call s.questionRepo.InsertOne
 func (s *quizService) AddQuestion(ctx context.Context, q *domain.Question) error {
-	return nil
+	q.CreatedAt = time.Now().UTC()
+	return s.questionRepo.InsertOne(ctx, q)
 }
 
 // ── AddQuestions ──────────────────────────────────────────────────────────────
@@ -61,7 +63,11 @@ func (s *quizService) AddQuestion(ctx context.Context, q *domain.Question) error
 //   - set CreatedAt on each question
 //   - call s.questionRepo.InsertMany
 func (s *quizService) AddQuestions(ctx context.Context, qs []domain.Question) error {
-	return nil
+	now := time.Now().UTC()
+	for i := range qs {
+		qs[i].CreatedAt = now
+	}
+	return s.questionRepo.InsertMany(ctx, qs)
 }
 
 // ── StartQuiz ─────────────────────────────────────────────────────────────────
@@ -73,7 +79,16 @@ func (s *quizService) AddQuestions(ctx context.Context, qs []domain.Question) er
 //   - convert each domain.Question to QuestionPublic via q.ToPublic()
 //   - return the []domain.QuestionPublic slice
 func (s *quizService) StartQuiz(ctx context.Context, subject string) ([]domain.QuestionPublic, error) {
-	return nil, nil
+	randomQuestions, err := s.questionRepo.GetRandom(ctx, subject, QuestionsPerQuiz)
+	if err != nil {
+		return nil, err
+	}
+
+	publicQuestions := make([]domain.QuestionPublic, len(randomQuestions))
+	for i, q := range randomQuestions {
+		publicQuestions[i] = q.ToPublic()
+	}
+	return publicQuestions, nil
 }
 
 // ── SubmitQuiz ────────────────────────────────────────────────────────────────
