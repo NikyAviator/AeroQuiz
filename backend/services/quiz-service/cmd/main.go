@@ -67,11 +67,12 @@ func main() {
 
 	// 4. Wire dependencies: repo → service → middleware → routes
 	userSvc := service.NewUserService(userRepo, adminEmail)
+	quizSvc := service.NewQuizService(questionRepo, userResultRepo)
 	mws := middleware.NewAuth(userSvc, adminEmail, apiSharedSecret)
 
 	// 5. Set up Gin router
 	router := gin.Default()
-	v1.Register(router, userSvc, v1.Options{
+	v1.Register(router, userSvc, quizSvc, v1.Options{
 		MW:              mws,
 		AdminEmail:      adminEmail,
 		ApiSharedSecret: apiSharedSecret, // This is to make sure the request is coming from the frontend.

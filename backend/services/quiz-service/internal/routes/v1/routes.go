@@ -17,32 +17,38 @@ type Options struct {
 }
 
 // Register wires all v1 routes onto the engine.
-func Register(r *gin.Engine, userSvc service.UserService, opts Options) {
+// quizSvc is now a required dependency alongside userSvc.
+func Register(r *gin.Engine, userSvc service.UserService, quizSvc service.QuizService, opts Options) {
 	api := r.Group("/api/v1")
 
-	// Public auth routes — no JWT required
+	// ── Public auth routes — no JWT required ──────────────────────────────────
 	auth := api.Group("/auth")
 	{
-		auth.POST("/register", controllers.RegisterController(userSvc))              // Auth endpoint: /api/v1/auth/register
-		auth.POST("/login", controllers.LoginController(userSvc, opts.CookieSecure)) // Auth endpoint: /api/v1/auth/login
-		// Logout clears the httpOnly cookie — no JWT check needed,
-		// clearing an already-absent cookie is harmless.
-		auth.POST("/logout", controllers.LogoutController()) // Auth endpoint: /api/v1/auth/logout
+		auth.POST("/register", controllers.RegisterController(userSvc))
+		auth.POST("/login", controllers.LoginController(userSvc, opts.CookieSecure))
+		auth.POST("/logout", controllers.LogoutController())
 	}
 
-	// Protected routes — valid httpOnly JWT cookie required
+	// ── Protected routes — valid httpOnly JWT cookie required ────────────────
 	protected := api.Group("/")
 	protected.Use(opts.MW.Authn)
 	{
-		// Future endpoints:
-		protected.GET("/me", controllers.MeController(userSvc)) // Protected endpoint: /api/v1/me
-		// protected.GET("/quiz", controllers.ListQuizzesController(quizSvc))
+		protected.GET("/me", controllers.MeController(userSvc))
+
+		// Quiz flow
+		protected.GET("/quiz/start", controllers.StartQuizController(quizSvc))
+		protected.POST("/quiz/submit", controllers.SubmitQuizController(quizSvc))
+
+		// History
+		protected.GET("/quiz/history", controllers.GetHistoryController(quizSvc))
+		protected.GET("/quiz/history/:id", controllers.GetResultController(quizSvc))
 	}
 
-	// Admin routes — valid JWT + admin email required
+	// ── Admin routes — valid JWT + admin email required ───────────────────────
 	admin := api.Group("/admin")
 	admin.Use(opts.MW.Authn, opts.MW.AdminOnly)
 	{
-		// Future admin endpoints
+		admin.POST("/questions", controllers.AddQuestionController(quizSvc))
+		admin.POST("/questions/batch", controllers.AddQuestionsController(quizSvc))
 	}
 }
