@@ -196,7 +196,17 @@ func (s *quizService) SubmitQuiz(ctx context.Context, userID string, req domain.
 //   - convert userID string -> bson.ObjectID
 //   - call s.resultRepo.FindByUserID
 func (s *quizService) GetHistory(ctx context.Context, userID string) ([]domain.UserResult, error) {
-	return nil, nil
+	oid, err := bson.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, errors.New("invalid user id")
+	}
+
+	results, err := s.resultRepo.FindByUserID(ctx, oid)
+	if err != nil {
+		return nil, errors.New("could not fetch history")
+	}
+
+	return results, nil
 }
 
 // ── GetResult ─────────────────────────────────────────────────────────────────
@@ -205,5 +215,15 @@ func (s *quizService) GetHistory(ctx context.Context, userID string) ([]domain.U
 //   - convert resultID string -> bson.ObjectID
 //   - call s.resultRepo.FindByID
 func (s *quizService) GetResult(ctx context.Context, resultID string) (*domain.UserResult, error) {
-	return nil, nil
+	oid, err := bson.ObjectIDFromHex(resultID)
+	if err != nil {
+		return nil, errors.New("invalid result id")
+	}
+
+	result, err := s.resultRepo.FindByID(ctx, oid)
+	if err != nil {
+		return nil, errors.New("could not fetch result")
+	}
+
+	return result, nil
 }
