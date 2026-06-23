@@ -56,6 +56,6 @@ type UserResult struct {
 	Passed      bool          `bson:"passed"        json:"passed"`      // score >= 15
 	Result      QuizResult    `bson:"result"        json:"result"`      // PASS / DID_NOT_PASS / DNF_PASSED / DNF_DID_NOT_PASS
 	StartedAt   time.Time     `bson:"startedAt"     json:"startedAt"`   // when the quiz started
-	SubmittedAt time.Time     `bson:"submittedAt"   json:"submittedAt"` // zero value if DNF
+	SubmittedAt time.Time     `bson:"submittedAt"   json:"submittedAt"` // zero value if DNF - NOW IS SET TO time.Now().UTC() if DNF
 	TimeTaken   int           `bson:"timeTaken"     json:"timeTaken"`   // seconds elapsed
 }
