@@ -111,18 +111,18 @@ func (s *quizService) StartQuiz(ctx context.Context, subject string) ([]domain.Q
 //   - build the domain.UserResult and call s.resultRepo.Save
 //   - return the saved *domain.UserResult
 func (s *quizService) SubmitQuiz(ctx context.Context, userID string, req domain.SubmitQuizRequest) (*domain.UserResult, error) {
-	// 1. Convert userID string → bson.ObjectID
+	// 1. Convert userID string to bson.ObjectID
 	oid, err := bson.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, errors.New("invalid user id")
 	}
 
-	// 2. Grade each answer
+	// 2. Grade each answer (make a new slice of domain.UserAnswer with the correct field set)
 	gradedAnswers := make([]domain.UserAnswer, len(req.Answers))
 	score := 0
 
 	for i, ans := range req.Answers {
-		// Convert QuestionID string → bson.ObjectID
+		// Convert QuestionID string to bson.ObjectID
 		qid, err := bson.ObjectIDFromHex(ans.QuestionID)
 		if err != nil {
 			return nil, errors.New("invalid question id")
@@ -173,7 +173,7 @@ func (s *quizService) SubmitQuiz(ctx context.Context, userID string, req domain.
 		Score:     score,
 		Passed:    passed,
 		Result:    quizResult,
-		StartedAt: now, // ideally sent from frontend — for now use server time
+		StartedAt: now, // ideally sent from frontend — for now use server time, TODO - send from frontend
 		TimeTaken: req.TimeTaken,
 	}
 
