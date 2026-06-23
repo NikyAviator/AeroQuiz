@@ -5,10 +5,12 @@ package service
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/domain"
 	"github.com/NikyAviator/AeroQuiz/backend/services/quiz-service/internal/repository"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // Quiz rules — defined once, used throughout the service.
@@ -109,7 +111,83 @@ func (s *quizService) StartQuiz(ctx context.Context, subject string) ([]domain.Q
 //   - build the domain.UserResult and call s.resultRepo.Save
 //   - return the saved *domain.UserResult
 func (s *quizService) SubmitQuiz(ctx context.Context, userID string, req domain.SubmitQuizRequest) (*domain.UserResult, error) {
-	return nil, nil
+	// 1. Convert userID string → bson.ObjectID
+	oid, err := bson.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, errors.New("invalid user id")
+	}
+
+	// 2. Grade each answer
+	gradedAnswers := make([]domain.UserAnswer, len(req.Answers))
+	score := 0
+
+	for i, ans := range req.Answers {
+		// Convert QuestionID string → bson.ObjectID
+		qid, err := bson.ObjectIDFromHex(ans.QuestionID)
+		if err != nil {
+			return nil, errors.New("invalid question id")
+		}
+
+		// Fetch the real question to get the correct answer
+		question, err := s.questionRepo.FindByID(ctx, qid)
+		if err != nil || question == nil {
+			return nil, errors.New("question not found")
+		}
+
+		// Compare Given vs Correct
+		correct := ans.Given == question.Correct
+		if correct {
+			score++
+		}
+
+		gradedAnswers[i] = domain.UserAnswer{
+			QuestionID: qid,
+			Given:      ans.Given,
+			Correct:    correct,
+		}
+	}
+
+	// 3. Determine pass/fail and result constant
+	passed := score >= PassingScore
+	var quizResult domain.QuizResult
+	if req.DNF {
+		if passed {
+			quizResult = domain.ResultDNFPassed
+		} else {
+			quizResult = domain.ResultDNFDidNotPass
+		}
+	} else {
+		if passed {
+			quizResult = domain.ResultPass
+		} else {
+			quizResult = domain.ResultDidNotPass
+		}
+	}
+
+	// 4. Build UserResult — only set SubmittedAt if not DNF
+	now := time.Now().UTC()
+	userResult := &domain.UserResult{
+		UserID:    oid,
+		Subject:   req.Subject,
+		Answers:   gradedAnswers,
+		Score:     score,
+		Passed:    passed,
+		Result:    quizResult,
+		StartedAt: now, // ideally sent from frontend — for now use server time
+		TimeTaken: req.TimeTaken,
+	}
+
+	// SubmittedAt is only set when the user actually submitted — not on DNF
+	if !req.DNF {
+		userResult.SubmittedAt = now
+	}
+
+	// 5. Save and return
+	if err := s.resultRepo.Save(ctx, userResult); err != nil {
+		return nil, errors.New("could not save user result")
+	}
+
+	return userResult, nil
 }
 
 // ── GetHistory ────────────────────────────────────────────────────────────────
