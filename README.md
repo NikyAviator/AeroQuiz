@@ -9,6 +9,7 @@ A fullstack aviation quiz application written in JavaScript and Go.
 - [Scripts](#scripts)
 - [DevOps](#devops)
 - [API Testing](#api-testing)
+- [Question Management (Admin Only)](#question-management)
 
 ### My Tech Stack
 
@@ -291,4 +292,225 @@ Content-Type: application/json
 curl -X POST http://localhost:5000/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"niky@example.com","password":"MyPassword123!"}'
+```
+
+---
+
+## Question Management
+
+Only the admin email (set via `ADMIN_EMAIL` in `secrets/quiz-service.env`) can push questions.
+All admin endpoints require a valid login cookie — log in first, then push questions.
+
+---
+
+### Step 1 — Login as admin
+
+```
+POST /api/v1/auth/login
+Content-Type: application/json
+```
+
+```json
+{
+  "email": "nikyaviator@gmail.com",
+  "password": "yourAdminPassword"
+}
+```
+
+Postman stores the `auth_token` httpOnly cookie automatically after a successful login.
+All subsequent requests will send it automatically — no manual header needed.
+
+---
+
+### Step 2 — Push a single question
+
+```
+POST /api/v1/admin/questions
+Content-Type: application/json
+```
+
+**Request body:**
+
+```json
+{
+  "subject": "Meteorology",
+  "text": "What is the standard sea level pressure in the ISA?",
+  "imageUrl": "",
+  "answers": [
+    { "key": "A", "text": "1003.25 hPa" },
+    { "key": "B", "text": "1013.25 hPa" },
+    { "key": "C", "text": "1023.25 hPa" },
+    { "key": "D", "text": "1033.25 hPa" }
+  ],
+  "correct": "B"
+}
+```
+
+**Responses:**
+
+| Status                      | Meaning                                     |
+| --------------------------- | ------------------------------------------- |
+| `201 Created`               | Question saved. Returns the saved question. |
+| `400 Bad Request`           | Malformed JSON or missing required fields.  |
+| `401 Unauthorized`          | Not logged in.                              |
+| `403 Forbidden`             | Logged in but not the admin email.          |
+| `500 Internal Server Error` | DB error.                                   |
+
+**curl:**
+
+```bash
+curl -X POST http://localhost:5000/api/v1/admin/questions \
+  -H "Content-Type: application/json" \
+  --cookie "auth_token=<your_token>" \
+  -d '{
+    "subject": "Meteorology",
+    "text": "What is the standard sea level pressure in the ISA?",
+    "imageUrl": "",
+    "answers": [
+      { "key": "A", "text": "1003.25 hPa" },
+      { "key": "B", "text": "1013.25 hPa" },
+      { "key": "C", "text": "1023.25 hPa" },
+      { "key": "D", "text": "1033.25 hPa" }
+    ],
+    "correct": "B"
+  }'
+```
+
+---
+
+### Step 3 — Push a batch of questions
+
+Use this when loading many questions at once from your ATPL/CPL textbook.
+The body is a JSON array — wrap multiple question objects in `[ ]`.
+
+```
+POST /api/v1/admin/questions/batch
+Content-Type: application/json
+```
+
+**Request body:**
+
+```json
+[
+  {
+    "subject": "Meteorology",
+    "text": "What is the standard sea level pressure in the ISA?",
+    "imageUrl": "",
+    "answers": [
+      { "key": "A", "text": "1003.25 hPa" },
+      { "key": "B", "text": "1013.25 hPa" },
+      { "key": "C", "text": "1023.25 hPa" },
+      { "key": "D", "text": "1033.25 hPa" }
+    ],
+    "correct": "B"
+  },
+  {
+    "subject": "Meteorology",
+    "text": "What is the standard temperature at sea level in the ISA?",
+    "imageUrl": "",
+    "answers": [
+      { "key": "A", "text": "+15°C" },
+      { "key": "B", "text": "+10°C" },
+      { "key": "C", "text": "0°C" },
+      { "key": "D", "text": "-15°C" }
+    ],
+    "correct": "A"
+  }
+]
+```
+
+**Responses:**
+
+| Status                      | Meaning                                           |
+| --------------------------- | ------------------------------------------------- |
+| `201 Created`               | All questions saved. Returns `{ "inserted": N }`. |
+| `400 Bad Request`           | Malformed JSON.                                   |
+| `401 Unauthorized`          | Not logged in.                                    |
+| `403 Forbidden`             | Logged in but not the admin email.                |
+| `500 Internal Server Error` | DB error.                                         |
+
+**Success response (`201`):**
+
+```json
+{ "inserted": 2 }
+```
+
+---
+
+### Step 4 — Verify: start a quiz for a subject
+
+Once you have 20+ questions for a subject, test random sampling:
+
+```
+GET /api/v1/quiz/start?subject=Meteorology
+```
+
+**Responses:**
+
+| Status             | Meaning                                     |
+| ------------------ | ------------------------------------------- |
+| `200 OK`           | Returns 20 random `QuestionPublic` objects. |
+| `400 Bad Request`  | Missing `subject` query param.              |
+| `401 Unauthorized` | Not logged in.                              |
+
+> ⚠️ The `correct` field is intentionally absent from the response — it is never sent to the frontend during an active quiz. Only the backend knows the correct answers.
+
+**Success response (`200`) — example of one question in the array:**
+
+```json
+[
+  {
+    "id": "6650a1f2c3d4e5f6a7b8c9d0",
+    "subject": "Meteorology",
+    "text": "What is the standard sea level pressure in the ISA?",
+    "imageUrl": "",
+    "answers": [
+      { "key": "A", "text": "1003.25 hPa" },
+      { "key": "B", "text": "1013.25 hPa" },
+      { "key": "C", "text": "1023.25 hPa" },
+      { "key": "D", "text": "1033.25 hPa" }
+    ]
+  }
+]
+```
+
+**curl:**
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/quiz/start?subject=Meteorology" \
+  --cookie "auth_token=<your_token>"
+```
+
+---
+
+### Question structure reference
+
+| Field      | Type            | Required | Description                                                            |
+| ---------- | --------------- | -------- | ---------------------------------------------------------------------- |
+| `subject`  | string          | ✅       | e.g. `"Meteorology"`, `"Air Law"`, `"Navigation"`                      |
+| `text`     | string          | ✅       | The full question text                                                 |
+| `imageUrl` | string          | ❌       | GCP bucket URL — empty string `""` if no image                         |
+| `answers`  | array of Answer | ✅       | Always 4 for multiple choice, 2 for True/False                         |
+| `correct`  | string          | ✅       | `"A"`, `"B"`, `"C"`, or `"D"` — never returned to frontend during quiz |
+
+**Answer object:**
+
+| Field  | Type   | Description                       |
+| ------ | ------ | --------------------------------- |
+| `key`  | string | `"A"`, `"B"`, `"C"`, or `"D"`     |
+| `text` | string | The answer text — always required |
+
+**True/False question example:**
+
+```json
+{
+  "subject": "Meteorology",
+  "text": "Warm air is denser than cold air at the same pressure.",
+  "imageUrl": "",
+  "answers": [
+    { "key": "A", "text": "True" },
+    { "key": "B", "text": "False" }
+  ],
+  "correct": "B"
+}
 ```
