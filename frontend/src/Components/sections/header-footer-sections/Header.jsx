@@ -13,10 +13,10 @@ import { useAuth } from '../../hooks/useAuth.jsx';
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 const linkClass =
-  'rounded-full bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-150';
+  'bg-gray-900 px-4 py-2 text-sm font-semibold text-yellow-400 hover:bg-gray-800 hover:text-yellow-300 transition-colors duration-150 dark:bg-gray-800 dark:hover:bg-gray-700';
 
 const logoutClass =
-  'rounded-full bg-red-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 transition-colors duration-150';
+  'bg-gray-900 px-4 py-2 text-sm font-semibold text-yellow-400 hover:bg-gray-800 hover:text-yellow-300 transition-colors duration-150 dark:bg-gray-800 dark:hover:bg-gray-700';
 
 // ── NavItems — defined at MODULE SCOPE, not inside Header ────────────────────
 // This is critical: if NavItems were defined inside Header, React would see it
