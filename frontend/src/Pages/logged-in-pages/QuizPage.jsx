@@ -10,17 +10,14 @@ export default function QuizPage() {
   const navigate = useNavigate();
   const subject = searchParams.get('subject') ?? '';
 
-  // ── State ─────────────────────────────────────────────────────────────────
+  // ── State ──────────────────────────────────────────────────────────────────
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState({}); // { [questionId]: "a"|"b"|"c"|"d" }
+  const [answers, setAnswers] = useState({});
   const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-
-  // useRef keeps the submit function stable so the timer effect can call it
-  // without needing it in the dependency array (avoids infinite re-renders)
   const submitRef = useRef(null);
 
   // ── Fetch questions on mount ───────────────────────────────────────────────
@@ -49,10 +46,9 @@ export default function QuizPage() {
       if (submitting) return;
       setSubmitting(true);
 
-      // Build the answers array the backend expects
       const answersArray = questions.map((q) => ({
         questionId: q.id,
-        given: answers[q.id] ?? '', // empty string if not answered
+        given: answers[q.id] ?? '',
       }));
 
       try {
@@ -63,16 +59,12 @@ export default function QuizPage() {
           body: JSON.stringify({
             subject,
             answers: answersArray,
-            timeTaken: TOTAL_TIME - timeLeft, // seconds elapsed
+            timeTaken: TOTAL_TIME - timeLeft,
             dnf,
           }),
         });
-
         if (!res.ok) throw new Error('Could not submit quiz');
         const result = await res.json();
-
-        // Pass result + questions to ResultPage via router state
-        // so the result page can show the full answer breakdown
         navigate('/result', { state: { result, questions } });
       } catch (err) {
         setError(err.message);
@@ -82,53 +74,44 @@ export default function QuizPage() {
     [submitting, questions, answers, subject, timeLeft, navigate],
   );
 
-  // Keep the ref up to date so the timer can always call the latest version
   useEffect(() => {
     submitRef.current = handleSubmit;
   }, [handleSubmit]);
 
   // ── Countdown timer ────────────────────────────────────────────────────────
-  // Only starts once questions are loaded — not while still fetching
   useEffect(() => {
     if (loading || questions.length === 0) return;
-
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          // Auto-submit with DNF when time runs out
           submitRef.current(true);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-
-    // Cleanup on unmount — prevents timer running after leaving the page
     return () => clearInterval(interval);
   }, [loading, questions.length]);
 
-  // ── Answer selection ───────────────────────────────────────────────────────
+  // ── Handlers ───────────────────────────────────────────────────────────────
   function handleSelectAnswer(questionId, key) {
     setAnswers((prev) => ({ ...prev, [questionId]: key }));
   }
-
-  // ── Navigation ─────────────────────────────────────────────────────────────
   function handlePrev() {
     setCurrentIndex((i) => Math.max(0, i - 1));
   }
-
   function handleNext() {
     setCurrentIndex((i) => Math.min(questions.length - 1, i + 1));
   }
 
-  // ── Derived state ──────────────────────────────────────────────────────────
+  // ── Derived ────────────────────────────────────────────────────────────────
   const answeredCount = Object.keys(answers).length;
   const allAnswered =
     answeredCount === questions.length && questions.length > 0;
   const currentQuestion = questions[currentIndex];
 
-  // ── Loading state ──────────────────────────────────────────────────────────
+  // ── Loading ────────────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-900">
@@ -158,7 +141,7 @@ export default function QuizPage() {
     );
   }
 
-  // ── Error state ────────────────────────────────────────────────────────────
+  // ── Error ──────────────────────────────────────────────────────────────────
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-900">
@@ -179,23 +162,16 @@ export default function QuizPage() {
   return (
     <div className="min-h-screen bg-gray-900 px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
-        {/* ── Top bar: progress + timer ── */}
+        {/* ── Top bar: progress dots only ── */}
         <div className="mb-8 rounded-lg bg-gray-800 px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="min-w-0 flex-1">
-              <QuizProgress
-                current={currentIndex}
-                total={questions.length}
-                answers={answers}
-                questions={questions}
-                onPrev={handlePrev}
-                onNext={handleNext}
-              />
-            </div>
-            <QuizTimer timeLeft={timeLeft} />
-          </div>
-
-          {/* Answered count */}
+          <QuizProgress
+            current={currentIndex}
+            total={questions.length}
+            answers={answers}
+            questions={questions}
+            onPrev={handlePrev}
+            onNext={handleNext}
+          />
           <p className="mt-3 text-center text-xs text-gray-500">
             {answeredCount} of {questions.length} questions answered
           </p>
@@ -204,7 +180,7 @@ export default function QuizPage() {
         {/* ── Question card ── */}
         {currentQuestion && (
           <div className="rounded-lg bg-white dark:bg-gray-800">
-            {/* Subject + question number tag */}
+            {/* Header */}
             <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
               <span className="text-xs font-semibold uppercase tracking-wide text-indigo-500">
                 {subject}
@@ -212,8 +188,6 @@ export default function QuizPage() {
               <h2 className="mt-2 text-lg font-semibold leading-relaxed text-gray-900 dark:text-white">
                 {currentQuestion.text}
               </h2>
-
-              {/* Optional image */}
               {currentQuestion.imageUrl && (
                 <img
                   src={currentQuestion.imageUrl}
@@ -223,14 +197,13 @@ export default function QuizPage() {
               )}
             </div>
 
-            {/* ── Answer options (radio group) ── */}
+            {/* Answer options */}
             <fieldset
               aria-label="Answer options"
               className="divide-y divide-gray-200 dark:divide-gray-700"
             >
               {currentQuestion.answers.map((answer) => {
                 const selected = answers[currentQuestion.id] === answer.key;
-
                 return (
                   <label
                     key={answer.key}
@@ -238,9 +211,8 @@ export default function QuizPage() {
                       selected
                         ? 'bg-indigo-50 dark:bg-indigo-900/30'
                         : 'hover:bg-gray-50 dark:hover:bg-gray-700/40'
-                    } first:rounded-t-none last:rounded-b-lg`}
+                    } last:rounded-b-lg`}
                   >
-                    {/* Hidden native radio — we style the custom circle below */}
                     <input
                       type="radio"
                       name={`question-${currentQuestion.id}`}
@@ -251,7 +223,6 @@ export default function QuizPage() {
                       }
                       className="sr-only"
                     />
-
                     {/* Custom radio circle */}
                     <span
                       className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
@@ -264,8 +235,7 @@ export default function QuizPage() {
                         <span className="size-2 rounded-full bg-white" />
                       )}
                     </span>
-
-                    {/* Key label (A/B/C/D) */}
+                    {/* Key badge */}
                     <span
                       className={`flex size-7 shrink-0 items-center justify-center rounded text-sm font-bold uppercase ${
                         selected
@@ -275,7 +245,6 @@ export default function QuizPage() {
                     >
                       {answer.key}
                     </span>
-
                     {/* Answer text */}
                     <span
                       className={`text-sm leading-relaxed ${
@@ -293,7 +262,7 @@ export default function QuizPage() {
           </div>
         )}
 
-        {/* ── Bottom navigation ── */}
+        {/* ── Bottom navigation — Prev | Timer | Next/Submit ── */}
         <div className="mt-6 flex items-center justify-between gap-4">
           <button
             onClick={handlePrev}
@@ -303,6 +272,9 @@ export default function QuizPage() {
             ← Previous
           </button>
 
+          {/* Timer centred between the two nav buttons */}
+          <QuizTimer timeLeft={timeLeft} />
+
           {currentIndex < questions.length - 1 ? (
             <button
               onClick={handleNext}
@@ -311,7 +283,6 @@ export default function QuizPage() {
               Next →
             </button>
           ) : (
-            // Submit button — only on last question
             <button
               onClick={() => handleSubmit(false)}
               disabled={submitting}
