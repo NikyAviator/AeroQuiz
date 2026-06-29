@@ -114,7 +114,7 @@ export default function QuizPage() {
   // ── Loading ────────────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-900">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-900">
         <div className="text-center">
           <svg
             className="mx-auto h-10 w-10 animate-spin text-indigo-400"
@@ -144,7 +144,7 @@ export default function QuizPage() {
   // ── Error ──────────────────────────────────────────────────────────────────
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-900">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-900">
         <div className="text-center">
           <p className="text-red-400">{error}</p>
           <button
@@ -160,10 +160,10 @@ export default function QuizPage() {
 
   // ── Quiz UI ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-900 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-900 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
         {/* ── Top bar: progress dots only ── */}
-        <div className="mb-8 rounded-lg bg-gray-800 px-6 py-4">
+        <div className="mb-8 rounded-lg bg-gray-200 px-6 py-4 dark:bg-gray-800">
           <QuizProgress
             current={currentIndex}
             total={questions.length}
@@ -203,10 +203,11 @@ export default function QuizPage() {
               className="divide-y divide-gray-200 dark:divide-gray-700"
             >
               {currentQuestion.answers.map((answer) => {
-                const selected = answers[currentQuestion.id] === answer.key;
+                const selected =
+                  answers[currentQuestion.id] === answer.key.toLowerCase();
                 return (
                   <label
-                    key={answer.key}
+                    key={answer.key.toLowerCase()}
                     className={`flex cursor-pointer items-center gap-4 px-6 py-4 transition-colors duration-100 ${
                       selected
                         ? 'bg-indigo-50 dark:bg-indigo-900/30'
@@ -216,10 +217,13 @@ export default function QuizPage() {
                     <input
                       type="radio"
                       name={`question-${currentQuestion.id}`}
-                      value={answer.key}
+                      value={answer.key.toLowerCase()}
                       checked={selected}
                       onChange={() =>
-                        handleSelectAnswer(currentQuestion.id, answer.key)
+                        handleSelectAnswer(
+                          currentQuestion.id,
+                          answer.key.toLowerCase(),
+                        )
                       }
                       className="sr-only"
                     />
@@ -243,7 +247,7 @@ export default function QuizPage() {
                           : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
                       }`}
                     >
-                      {answer.key}
+                      {answer.key.toLowerCase()}
                     </span>
                     {/* Answer text */}
                     <span
@@ -267,7 +271,7 @@ export default function QuizPage() {
           <button
             onClick={handlePrev}
             disabled={currentIndex === 0}
-            className="bg-gray-800 px-5 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-30"
+            className="bg-gray-200 px-5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-30 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             ← Previous
           </button>
@@ -278,7 +282,7 @@ export default function QuizPage() {
           {currentIndex < questions.length - 1 ? (
             <button
               onClick={handleNext}
-              className="bg-gray-800 px-5 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-700"
+              className="bg-gray-200 px-5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
               Next →
             </button>
