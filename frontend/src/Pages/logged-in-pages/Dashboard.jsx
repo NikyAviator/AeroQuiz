@@ -14,7 +14,7 @@ const subjects = [
     subject: 'Meteorology',
     description:
       'Atmosphere, pressure, temperature, winds, clouds and weather phenomena. Essential knowledge for safe flight planning.',
-    questionCount: 73,
+    questionCount: 70,
     available: true,
     imageSrc:
       'https://images.unsplash.com/photo-1561470508-fd4df1ed90b2?q=80&w=2676&auto=format&fit=crop',
