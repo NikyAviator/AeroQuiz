@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/hooks/useAuth.jsx';
+import StartQuizModal from '../../Components/ui/StartQuizModal.jsx';
 
 // ── Subject data ──────────────────────────────────────────────────────────────
 // questionCount: hardcoded for now — will be fetched from
@@ -9,7 +11,7 @@ const subjects = [
   {
     id: 1,
     name: 'Meteorology',
-    subject: 'Meteorology', // must match the subject string in MongoDB exactly
+    subject: 'Meteorology',
     description:
       'Atmosphere, pressure, temperature, winds, clouds and weather phenomena. Essential knowledge for safe flight planning.',
     questionCount: 73,
@@ -84,20 +86,32 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  function handleStartQuiz(subject) {
-    navigate(`/quiz?subject=${encodeURIComponent(subject)}`);
+  // selectedSubject drives the modal — null = closed, object = open
+  const [selectedSubject, setSelectedSubject] = useState(null);
+
+  function handleOpenModal(subject) {
+    setSelectedSubject(subject);
+  }
+
+  function handleCloseModal() {
+    setSelectedSubject(null);
+  }
+
+  function handleConfirm() {
+    if (!selectedSubject) return;
+    navigate(`/quiz?subject=${encodeURIComponent(selectedSubject.subject)}`);
   }
 
   return (
     <div className="bg-white dark:bg-gray-900">
-      {/* ── Header ── */}
+      {/* ── Page header ── */}
       <div className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Welcome back, {user?.username}! ✈
         </h1>
         <p className="mt-2 text-gray-500 dark:text-gray-400">
-          Choose a subject below to start a practice test. Each session gives
-          you 20 random questions and 45 minutes to complete them.
+          Choose a subject to start a practice test. Each session gives you 20
+          random questions and 45 minutes to complete them.
         </p>
       </div>
 
@@ -124,7 +138,6 @@ export default function Dashboard() {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     {s.name}
                   </h3>
-                  {/* Question count badge */}
                   <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
                     {s.questionCount > 0
                       ? `${s.questionCount} questions`
@@ -136,10 +149,9 @@ export default function Dashboard() {
                   {s.description}
                 </p>
 
-                {/* Start Quiz button — only shown if subject is available */}
                 {s.available ? (
                   <button
-                    onClick={() => handleStartQuiz(s.subject)}
+                    onClick={() => handleOpenModal(s)}
                     className="mt-2 w-full bg-gray-900 px-4 py-2 text-sm font-semibold text-yellow-400 transition-colors duration-150 hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600"
                   >
                     Start Quiz →
@@ -154,6 +166,14 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
+
+      {/* ── Confirmation modal ── */}
+      <StartQuizModal
+        subject={selectedSubject}
+        open={!!selectedSubject}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }
