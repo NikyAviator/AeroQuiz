@@ -363,7 +363,7 @@ export default function QuizPage() {
         <div className="mt-4 text-center">
           <button
             onClick={() => setShowCancelModal(true)}
-            className="text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+            className="border border-red-300 bg-gray-200 px-5 py-2 text-sm font-semibold text-red-600 hover:bg-gray-300 dark:border-red-800 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
           >
             Cancel Test
           </button>
