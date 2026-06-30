@@ -2,27 +2,76 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import QuizTimer from '../../Components/ui/QuizTimer.jsx';
 import QuizProgress from '../../Components/ui/QuizProgress.jsx';
+import CancelTestModal from '../../Components/ui/CancelTestModal.jsx';
 
 const TOTAL_TIME = 45 * 60; // 2700 seconds
+
+function storageKey(subject) {
+  return `quiz_session_${subject}`;
+}
+
+function loadSession(subject) {
+  try {
+    const raw = sessionStorage.getItem(storageKey(subject));
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function saveSession(subject, data) {
+  try {
+    sessionStorage.setItem(storageKey(subject), JSON.stringify(data));
+  } catch {
+    // sessionStorage can fail in private browsing / quota exceeded —
+    // fail silently, the quiz still works, it just won't survive a refresh.
+  }
+}
+
+function clearSession(subject) {
+  sessionStorage.removeItem(storageKey(subject));
+}
 
 export default function QuizPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const subject = searchParams.get('subject') ?? '';
 
-  // ── State ──────────────────────────────────────────────────────────────────
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [startedAt, setStartedAt] = useState(null);
   const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const submitRef = useRef(null);
 
-  // ── Fetch questions on mount ───────────────────────────────────────────────
   useEffect(() => {
-    async function fetchQuestions() {
+    if (!subject) return;
+
+    async function init() {
+      const saved = loadSession(subject);
+
+      if (saved) {
+        const elapsed = Math.floor((Date.now() - saved.startedAt) / 1000);
+        const remaining = Math.max(0, TOTAL_TIME - elapsed);
+
+        setQuestions(saved.questions);
+        setAnswers(saved.answers);
+        setCurrentIndex(saved.currentIndex);
+        setStartedAt(saved.startedAt);
+        setTimeLeft(remaining);
+        setLoading(false);
+
+        if (remaining <= 0) {
+          submitRef.current?.(true);
+        }
+        return;
+      }
+
       try {
         const res = await fetch(
           `/api/v1/quiz/start?subject=${encodeURIComponent(subject)}`,
@@ -30,17 +79,31 @@ export default function QuizPage() {
         );
         if (!res.ok) throw new Error('Could not load questions');
         const data = await res.json();
+        const now = Date.now();
+
         setQuestions(data);
+        setStartedAt(now);
+        saveSession(subject, {
+          questions: data,
+          answers: {},
+          currentIndex: 0,
+          startedAt: now,
+        });
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     }
-    if (subject) fetchQuestions();
+
+    init();
   }, [subject]);
 
-  // ── Submit handler ─────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (loading || questions.length === 0 || !startedAt) return;
+    saveSession(subject, { questions, answers, currentIndex, startedAt });
+  }, [subject, questions, answers, currentIndex, startedAt, loading]);
+
   const handleSubmit = useCallback(
     async (dnf = false) => {
       if (submitting) return;
@@ -65,6 +128,8 @@ export default function QuizPage() {
         });
         if (!res.ok) throw new Error('Could not submit quiz');
         const result = await res.json();
+
+        clearSession(subject);
         navigate('/result', { state: { result, questions } });
       } catch (err) {
         setError(err.message);
@@ -78,7 +143,6 @@ export default function QuizPage() {
     submitRef.current = handleSubmit;
   }, [handleSubmit]);
 
-  // ── Countdown timer ────────────────────────────────────────────────────────
   useEffect(() => {
     if (loading || questions.length === 0) return;
     const interval = setInterval(() => {
@@ -94,7 +158,6 @@ export default function QuizPage() {
     return () => clearInterval(interval);
   }, [loading, questions.length]);
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   function handleSelectAnswer(questionId, key) {
     setAnswers((prev) => ({ ...prev, [questionId]: key }));
   }
@@ -105,13 +168,16 @@ export default function QuizPage() {
     setCurrentIndex((i) => Math.min(questions.length - 1, i + 1));
   }
 
-  // ── Derived ────────────────────────────────────────────────────────────────
+  function handleCancelConfirm() {
+    clearSession(subject);
+    navigate('/dashboard');
+  }
+
   const answeredCount = Object.keys(answers).length;
   const allAnswered =
     answeredCount === questions.length && questions.length > 0;
   const currentQuestion = questions[currentIndex];
 
-  // ── Loading ────────────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-900">
@@ -141,7 +207,6 @@ export default function QuizPage() {
     );
   }
 
-  // ── Error ──────────────────────────────────────────────────────────────────
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-900">
@@ -158,11 +223,9 @@ export default function QuizPage() {
     );
   }
 
-  // ── Quiz UI ────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-900 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
-        {/* ── Top bar: progress dots only ── */}
         <div className="mb-8 rounded-lg bg-gray-200 px-6 py-4 dark:bg-gray-800">
           <QuizProgress
             current={currentIndex}
@@ -177,10 +240,8 @@ export default function QuizPage() {
           </p>
         </div>
 
-        {/* ── Question card ── */}
         {currentQuestion && (
           <div className="rounded-lg bg-white dark:bg-gray-800">
-            {/* Header */}
             <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
               <span className="text-xs font-semibold uppercase tracking-wide text-indigo-500">
                 {subject}
@@ -197,7 +258,6 @@ export default function QuizPage() {
               )}
             </div>
 
-            {/* Answer options */}
             <fieldset
               aria-label="Answer options"
               className="divide-y divide-gray-200 dark:divide-gray-700"
@@ -227,7 +287,6 @@ export default function QuizPage() {
                       }
                       className="sr-only"
                     />
-                    {/* Custom radio circle */}
                     <span
                       className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
                         selected
@@ -239,7 +298,6 @@ export default function QuizPage() {
                         <span className="size-2 rounded-full bg-white" />
                       )}
                     </span>
-                    {/* Key badge */}
                     <span
                       className={`flex size-7 shrink-0 items-center justify-center rounded text-sm font-bold uppercase ${
                         selected
@@ -249,7 +307,6 @@ export default function QuizPage() {
                     >
                       {answer.key.toLowerCase()}
                     </span>
-                    {/* Answer text */}
                     <span
                       className={`text-sm leading-relaxed ${
                         selected
@@ -266,7 +323,6 @@ export default function QuizPage() {
           </div>
         )}
 
-        {/* ── Bottom navigation — Prev | Timer | Next/Submit ── */}
         <div className="mt-6 flex items-center justify-between gap-4">
           <button
             onClick={handlePrev}
@@ -276,7 +332,6 @@ export default function QuizPage() {
             ← Previous
           </button>
 
-          {/* Timer centred between the two nav buttons */}
           <QuizTimer timeLeft={timeLeft} />
 
           {currentIndex < questions.length - 1 ? (
@@ -304,7 +359,22 @@ export default function QuizPage() {
             </button>
           )}
         </div>
+
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => setShowCancelModal(true)}
+            className="text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+          >
+            Cancel Test
+          </button>
+        </div>
       </div>
+
+      <CancelTestModal
+        open={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleCancelConfirm}
+      />
     </div>
   );
 }
