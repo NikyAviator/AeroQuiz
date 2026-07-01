@@ -220,6 +220,27 @@ export default function HistoryPage() {
     ],
   };
 
+  // Inline Chart.js plugin — draws the dashed pass mark line at exactly y=15
+  // using the chart's own scale, so it's always pixel-perfect regardless of size.
+  const pasMarkPlugin = {
+    id: 'passMarkLine',
+    afterDraw(chart) {
+      const { ctx, scales } = chart;
+      const yScale = scales.y;
+      const xScale = scales.x;
+      const y = yScale.getPixelForValue(15);
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash([6, 4]);
+      ctx.moveTo(xScale.left, y);
+      ctx.lineTo(xScale.right, y);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(250, 204, 21, 0.6)'; // yellow-400/60
+      ctx.stroke();
+      ctx.restore();
+    },
+  };
+
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -237,19 +258,11 @@ export default function HistoryPage() {
         max: 20,
         ticks: { stepSize: 5, color: '#9ca3af' },
         grid: { color: 'rgba(156,163,175,0.15)' },
-        // Dashed pass mark line at 15
-        afterDataLimits(scale) {
-          scale.max = 20;
-        },
       },
       x: {
         ticks: { color: '#9ca3af', maxRotation: 30 },
         grid: { display: false },
       },
-    },
-    // Draw dashed pass-mark line at y=15
-    plugins: {
-      annotation: undefined, // no annotation plugin needed — we draw it manually below
     },
   };
 
@@ -309,15 +322,11 @@ export default function HistoryPage() {
             </div>
           </div>
 
-          {/* Pass mark annotation drawn as a simple HR overlay */}
-          <div className="relative">
-            <Line data={chartData} options={chartOptions} />
-            {/* Dashed pass-mark line — positioned at 25% from bottom (15/20 = 75%) */}
-            <div
-              className="pointer-events-none absolute left-12 right-0 border-t-2 border-dashed border-yellow-400/60"
-              style={{ bottom: 'calc(10px + 75% - 0px)' }}
-            />
-          </div>
+          <Line
+            data={chartData}
+            options={chartOptions}
+            plugins={[pasMarkPlugin]}
+          />
         </div>
 
         {/* ── History table ── */}
