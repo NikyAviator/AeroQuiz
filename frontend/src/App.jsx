@@ -9,6 +9,7 @@ import Dashboard from './Pages/logged-in-pages/Dashboard.jsx';
 import QuizPage from './Pages/logged-in-pages/QuizPage.jsx';
 import ResultPage from './Pages/logged-in-pages/ResultPage.jsx';
 import ProtectedRoute from './Components/ui/ProtectedRoute.jsx';
+import HistoryPage from './Pages/logged-in-pages/HistoryPage.jsx';
 import './styles.css';
 
 function App() {
@@ -45,6 +46,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ResultPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/history"
+              element={
+                <ProtectedRoute>
+                  <HistoryPage />
                 </ProtectedRoute>
               }
             />

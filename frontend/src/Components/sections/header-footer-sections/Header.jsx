@@ -43,6 +43,9 @@ function NavItems({ mobile, loading, user, closeMobile, onLogout }) {
         <Link to="/dashboard" onClick={closeMobile} className={base}>
           Dashboard
         </Link>
+        <Link to="/history" onClick={closeMobile} className={base}>
+          History
+        </Link>
         {/* Greeting — not a link, just a friendly label */}
         <span className="px-3 py-1.5 text-sm font-semibold text-gray-700 dark:text-gray-200">
           Welcome, {user.username}!
