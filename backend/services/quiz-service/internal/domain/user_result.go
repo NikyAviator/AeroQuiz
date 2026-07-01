@@ -43,6 +43,7 @@ type UserAnswer struct {
 	QuestionID bson.ObjectID `bson:"questionId" json:"questionId"`
 	Given      string        `bson:"given"      json:"given"`   // what the user chose
 	Correct    bool          `bson:"correct"    json:"correct"` // did they get it right?
+	CorrectKey string        `bson:"correctKey" json:"correctKey"`
 }
 
 // UserResult is the full quiz result stored in the "user_results" collection.

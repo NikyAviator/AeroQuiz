@@ -144,6 +144,7 @@ func (s *quizService) SubmitQuiz(ctx context.Context, userID string, req domain.
 			QuestionID: qid,
 			Given:      ans.Given,
 			Correct:    correct,
+			CorrectKey: question.Correct,
 		}
 	}
 
