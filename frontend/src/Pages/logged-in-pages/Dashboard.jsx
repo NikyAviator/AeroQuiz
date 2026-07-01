@@ -82,21 +82,54 @@ const subjects = [
   },
 ];
 
+// Check if a saved session exists for this subject in sessionStorage.
+// Mirrors the storageKey logic in QuizPage.jsx — must match exactly.
+function hasExistingSession(subject) {
+  try {
+    return !!sessionStorage.getItem(`quiz_session_${subject}`);
+  } catch {
+    return false;
+  }
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
   // selectedSubject drives the modal — null = closed, object = open
   const [selectedSubject, setSelectedSubject] = useState(null);
+  // Whether the selected subject has an active session in sessionStorage
+  const [sessionExists, setSessionExists] = useState(false);
 
   function handleOpenModal(subject) {
     setSelectedSubject(subject);
+    setSessionExists(hasExistingSession(subject.subject));
   }
 
   function handleCloseModal() {
     setSelectedSubject(null);
+    setSessionExists(false);
   }
 
+  // Resume — navigate directly, QuizPage will restore from sessionStorage
+  function handleResume() {
+    if (!selectedSubject) return;
+    navigate(`/quiz?subject=${encodeURIComponent(selectedSubject.subject)}`);
+  }
+
+  // Start New — clear any existing session first, then navigate.
+  // QuizPage will see no session and fetch fresh questions.
+  function handleStartNew() {
+    if (!selectedSubject) return;
+    try {
+      sessionStorage.removeItem(`quiz_session_${selectedSubject.subject}`);
+    } catch {
+      // ignore
+    }
+    navigate(`/quiz?subject=${encodeURIComponent(selectedSubject.subject)}`);
+  }
+
+  // Normal confirm — only used when no session exists
   function handleConfirm() {
     if (!selectedSubject) return;
     navigate(`/quiz?subject=${encodeURIComponent(selectedSubject.subject)}`);
@@ -154,7 +187,9 @@ export default function Dashboard() {
                     onClick={() => handleOpenModal(s)}
                     className="mt-2 w-full bg-gray-900 px-4 py-2 text-sm font-semibold text-yellow-400 transition-colors duration-150 hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600"
                   >
-                    Start Quiz →
+                    {hasExistingSession(s.subject)
+                      ? 'Continue Test →'
+                      : 'Start Quiz →'}
                   </button>
                 ) : (
                   <div className="mt-2 w-full cursor-not-allowed bg-gray-100 px-4 py-2 text-center text-sm font-semibold text-gray-400 dark:bg-gray-700/50 dark:text-gray-500">
@@ -171,8 +206,11 @@ export default function Dashboard() {
       <StartQuizModal
         subject={selectedSubject}
         open={!!selectedSubject}
+        hasSession={sessionExists}
         onClose={handleCloseModal}
         onConfirm={handleConfirm}
+        onResume={handleResume}
+        onStartNew={handleStartNew}
       />
     </div>
   );
