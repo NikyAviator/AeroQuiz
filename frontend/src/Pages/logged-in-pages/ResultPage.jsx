@@ -117,13 +117,19 @@ export default function ResultPage() {
           </div>
         </div>
 
-        {/* ── Back button ── */}
-        <div className="mt-6 text-center">
+        {/* ── Top buttons ── */}
+        <div className="mt-6 flex items-center justify-center gap-4">
           <button
             onClick={() => navigate('/dashboard')}
             className="bg-gray-900 px-6 py-2 text-sm font-semibold text-yellow-400 hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600"
           >
             ← Back to Dashboard
+          </button>
+          <button
+            onClick={() => navigate('/history')}
+            className="bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+          >
+            View History →
           </button>
         </div>
 
@@ -238,12 +244,18 @@ export default function ResultPage() {
         </div>
 
         {/* ── Bottom back button ── */}
-        <div className="mt-10 text-center">
+        <div className="mt-10 flex items-center justify-center gap-4">
           <button
             onClick={() => navigate('/dashboard')}
             className="bg-gray-900 px-6 py-2 text-sm font-semibold text-yellow-400 hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600"
           >
             ← Back to Dashboard
+          </button>
+          <button
+            onClick={() => navigate('/history')}
+            className="bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+          >
+            View History →
           </button>
         </div>
       </div>
